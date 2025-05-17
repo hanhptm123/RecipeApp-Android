@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.recipeapp.Login" />
+        <activity android:name="com.example.recipeapp.User_page" />
+        <activity android:name="com.example.recipeapp.Admin_page" />
     </application>
 
 </manifest>

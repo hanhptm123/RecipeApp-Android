@@ -46,5 +46,7 @@
     <string name="desc_menu">Menu</string>
     <string name="desc_search">Search</string>
     <string name="desc_logout">Logout</string>
+    <string name="desc_profile">User profile</string>
+
 
 </resources>

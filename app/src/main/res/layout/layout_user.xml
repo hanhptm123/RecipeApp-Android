@@ -8,7 +8,7 @@
 
     <!-- Header -->
     <LinearLayout
-        android:id="@+id/header"
+        android:id="@+id/header_user"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#B9EC7F"
@@ -18,7 +18,7 @@
         android:gravity="center_vertical">
 
         <ImageButton
-            android:id="@+id/btnmenu"
+            android:id="@+id/btnmenu_user"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -32,7 +32,7 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/btnsearch"
+            android:id="@+id/btnsearch_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="36dp"
@@ -44,29 +44,29 @@
             android:layout_marginEnd="16dp" />
 
         <ImageButton
-            android:id="@+id/btnlogin"
+            android:id="@+id/btnprofile_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="20dp"
             android:minHeight="20dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_logout_black_24dp"
-            android:contentDescription="@string/desc_logout"
+            android:src="@drawable/profile"
+            android:contentDescription="@string/desc_profile"
             app:tint="#000000" />
     </LinearLayout>
 
     <!-- Main Content -->
     <FrameLayout
-        android:id="@+id/content"
-        android:layout_below="@id/header"
-        android:layout_above="@id/footer"
+        android:id="@+id/content_user"
+        android:layout_below="@id/header_user"
+        android:layout_above="@id/footer_user"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF" />
 
     <!-- Footer -->
     <View
-        android:id="@+id/footer"
+        android:id="@+id/footer_user"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="56dp"
