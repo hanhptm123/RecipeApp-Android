@@ -110,5 +110,13 @@ public class Login extends AppCompatActivity {
             startActivity(it);
             finish();
         });
+        Button btnsignup = (Button) findViewById(R.id.btnsignup);
+        btnsignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(Login.this, Sign_up.class);
+                startActivity(it);
+            }
+        });
     }
 }
