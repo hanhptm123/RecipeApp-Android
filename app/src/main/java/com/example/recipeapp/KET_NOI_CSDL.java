@@ -11,7 +11,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipeDB.db";
     private static final int DATABASE_VERSION = 1;
 
-    public KET_NOI_CSDL(@Nullable Context context) {
+    public KET_NOI_CSDL(@Nullable Context context, String s, Object o, int i) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -65,11 +65,30 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "UserID INTEGER, " +
                 "RecipeID INTEGER, " +
                 "FOREIGN KEY(RecipeID) REFERENCES Recipes(RecipeID))");
+// Bảng Users
+        db.execSQL("CREATE TABLE Users (" +
+                "UserID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "UserName TEXT, " +
+                "Email TEXT NOT NULL UNIQUE, " +
+                "Password TEXT NOT NULL, " +
+                "Role TEXT DEFAULT 'User', " +
+                "IsBanned INTEGER DEFAULT 0, " +
+                "Avatar TEXT, " +
+                "Address TEXT, " +
+                "PhoneNumber TEXT, " +
+                "Gender TEXT, " +
+                "BanReason TEXT)");
 
         // Dữ liệu mẫu (tuỳ chọn)
         db.execSQL("INSERT INTO Categories (CategoryName) VALUES ('Món chính'), ('Tráng miệng')");
         db.execSQL("INSERT INTO Origins (OriginName) VALUES ('Việt Nam'), ('Nhật Bản')");
         db.execSQL("INSERT INTO Ingredients (IngredientName) VALUES ('Thịt gà'), ('Muối'), ('Đường')");
+        db.execSQL("INSERT INTO Users (UserName, Email, Password, Role, IsBanned, Avatar, Address, PhoneNumber, Gender, BanReason) VALUES " +
+                "('Admin', 'admin@gmail.com', '123456', 'Admin', 0, NULL, '123 Admin Street', '0123456789', 'Male', NULL), " +
+                "('User1', 'user1@example.com', 'password1', 'User', 0, NULL, '456 User Ave', '0987654321', 'Female', NULL), " +
+                "('BannedUser', 'banned@example.com', '123456', 'User', 1, NULL, '789 Banned Rd', '0111222333', 'Other', 'Vi phạm nội quy')");
+
+
     }
 
     @Override
