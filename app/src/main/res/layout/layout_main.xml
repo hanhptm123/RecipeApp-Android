@@ -19,8 +19,8 @@
 
         <ImageButton
             android:id="@+id/menuButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_menu"
             android:src="@drawable/ic_menu_black_24dp"
@@ -44,7 +44,7 @@
             android:layout_marginEnd="16dp" />
 
         <ImageButton
-            android:id="@+id/logoutButton"
+            android:id="@+id/btnlogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="20dp"
