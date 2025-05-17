@@ -32,6 +32,7 @@ public class Login extends AppCompatActivity {
 
         dbHelper = new KET_NOI_CSDL(this, "RecipeDB.db", null, 1);
 
+        // Button đăng nhập
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,12 +54,12 @@ public class Login extends AppCompatActivity {
                     String banReason = cursor.getString(cursor.getColumnIndexOrThrow("BanReason"));
 
                     if (isBanned == 1) {
-                        Toast.makeText(Login.this, "Your account has been banned. Reason: " + banReason, Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login.this, "Your account has been banned.\nReason: " + banReason, Toast.LENGTH_LONG).show();
                     } else {
                         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("UserID"));
                         String role = cursor.getString(cursor.getColumnIndexOrThrow("Role"));
 
-                        // ✅ Lưu vào SharedPreferences
+                        // Lưu thông tin đăng nhập
                         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putInt("UserID", userId);
@@ -67,7 +68,18 @@ public class Login extends AppCompatActivity {
 
                         Toast.makeText(Login.this, "Login successful!", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        // Điều hướng theo role
+                        Intent intent;
+                        if ("admin".equalsIgnoreCase(role)) {
+                            intent = new Intent(Login.this, Admin_page.class);
+                        } else if ("user".equalsIgnoreCase(role)) {
+                            intent = new Intent(Login.this, User_page.class);
+                        } else {
+                            Toast.makeText(Login.this, "Unknown role: " + role, Toast.LENGTH_SHORT).show();
+                            cursor.close();
+                            return;
+                        }
+
                         intent.putExtra("UserID", userId);
                         intent.putExtra("Role", role);
                         startActivity(intent);
@@ -81,7 +93,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        // Show/hide password
+        // Hiện/ẩn mật khẩu
         checkboxShow.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 editpassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -90,14 +102,13 @@ public class Login extends AppCompatActivity {
             }
             editpassword.setSelection(editpassword.length());
         });
-        //code button go back
-        Button btback = (Button) findViewById(R.id.btngoback);
-        btback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent it = new Intent(Login.this,MainActivity.class);
-                startActivity(it);
-            }
+
+        // Nút quay lại
+        Button btback = findViewById(R.id.btngoback);
+        btback.setOnClickListener(v -> {
+            Intent it = new Intent(Login.this, MainActivity.class);
+            startActivity(it);
+            finish();
         });
     }
 }
