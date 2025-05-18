@@ -7,6 +7,14 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <string name="cook_time">Cook time</string>
+    <string name="category">Category</string>
+    <string name="origin">Origin</string>
+    <string name="posted_on">Posted on</string>
+    <string name="by">By</string>
+    <string name="minutes">minutes</string>
+    <string name="recipe_name">Recipe Name</string>
+
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
