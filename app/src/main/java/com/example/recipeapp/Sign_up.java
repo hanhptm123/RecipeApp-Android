@@ -87,11 +87,13 @@ public class Sign_up extends AppCompatActivity {
     }
 
     private void addUser(String userName, String email, String password) {
-        String sql = "INSERT INTO Users (UserName, Email, Password, Role, IsBanned, Avatar) VALUES (" +
+        String sql = "INSERT INTO Users (UserName, Email, Password, Role, IsBanned, Avatar, Gender) VALUES (" +
                 "'" + userName + "', " +
                 "'" + email + "', " +
                 "'" + password + "', " +
-                "'User', 0, NULL)";
+                "'User', 0, NULL, 'Other')";
         dbHelper.Ghi_bang(sql);
     }
+
+
 }
