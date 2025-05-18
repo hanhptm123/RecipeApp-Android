@@ -51,6 +51,14 @@ public class User_home_page extends AppCompatActivity {
                 startActivity(it);
             }
         });
+        ImageButton btn_add_recipe = (ImageButton) findViewById(R.id.createRecipeIcon);
+        btn_add_recipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(User_home_page.this, AddRecipeActivity.class);
+                startActivity(it);
+            }
+        });
 
     }
 }

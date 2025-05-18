@@ -49,11 +49,7 @@ public class MainActivity extends AppCompatActivity {
         content.addView(viewRecipes);
 
         // Gắn sự kiện nút Add Recipes
-        Button btnAddRecipe = viewRecipes.findViewById(R.id.btnAddRecipe);
-        btnAddRecipe.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddRecipeActivity.class);
-            startActivity(intent);
-        });
+
     }
 
     // Gọi lại loadRecipes khi quay về từ AddActivity
