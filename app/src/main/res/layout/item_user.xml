@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:background="#FFFFFF"
+    android:layout_marginBottom="4dp"
+    android:elevation="2dp">
+
+    <!-- Avatar -->
+    <ImageView
+        android:id="@+id/imgAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/avatar_description"
+        android:src="@drawable/avatar" />
+
+    <!-- Tên và Email -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="User Name"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="email@example.com"
+            android:textColor="#777777"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Lý do và nút Ban gói gọn bên phải -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Spinner
+            android:id="@+id/spinnerReason"
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:padding="4dp"
+            android:layout_marginEnd="4dp"
+            android:spinnerMode="dropdown"
+            android:contentDescription="@string/spinner_reason_description" />
+
+        <ImageButton
+            android:id="@+id/btnBan"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ban"
+            android:contentDescription="@string/ban_button_description"/>
+    </LinearLayout>
+
+</LinearLayout>
