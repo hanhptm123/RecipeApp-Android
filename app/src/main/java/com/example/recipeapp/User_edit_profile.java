@@ -1,6 +1,7 @@
 package com.example.recipeapp;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -83,6 +84,14 @@ public class User_edit_profile extends AppCompatActivity {
                 Toast.makeText(User_edit_profile.this, "Update failed!", Toast.LENGTH_SHORT).show();
             }
         });
+        Button btncancel = (Button) findViewById(R.id.btn_cancel_edit);
+        btncancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(User_edit_profile.this, User_profile.class);
+                startActivity(it);
+            }
+        });
     }
 
     private void loadUserData(int userId) {
@@ -106,4 +115,6 @@ public class User_edit_profile extends AppCompatActivity {
         }
         cursor.close();
     }
+
+
 }

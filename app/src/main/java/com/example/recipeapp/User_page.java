@@ -42,8 +42,11 @@ public class User_page extends AppCompatActivity {
                 Glide.with(this)
                         .load(avatarName)  // avatarName có thể là URL hoặc đường dẫn file
                         .placeholder(R.drawable.profile)  // ảnh tạm khi đang load
-                        .error(R.drawable.profile)  // ảnh lỗi
+                        .error(R.drawable.profile)
+                        .circleCrop()// ảnh lỗi
                         .into(btnprofile);
+
+
             }
 
         }
