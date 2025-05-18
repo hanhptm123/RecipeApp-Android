@@ -45,7 +45,14 @@ public class Admin_page extends AppCompatActivity {
                         .show();
             }
         });
-
+        ImageButton btn_user_management =(ImageButton) findViewById(R.id.btnUserManagement);
+        btn_user_management.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(Admin_page.this, User_management.class);
+                startActivity(it);
+            }
+        });
 
     }
 }

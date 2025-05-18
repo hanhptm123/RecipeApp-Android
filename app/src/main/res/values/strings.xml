@@ -47,6 +47,15 @@
     <string name="desc_search">Search</string>
     <string name="desc_logout">Logout</string>
     <string name="desc_profile">User profile</string>
+    <string name="avatar_description">User Avatar</string>
+    <string name="spinner_reason_description">Reason for banning</string>
+    <string name="ban_button_description">Ban this user</string>
+    <string-array name="ban_reasons">
+        <item>Violation of terms of service</item>
+        <item>Spamming content</item>
+        <item>Inappropriate language</item>
+    </string-array>
+
 
 
 </resources>

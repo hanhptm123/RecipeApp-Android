@@ -33,6 +33,7 @@
         <activity android:name="com.example.recipeapp.User_home_page" />
         <activity android:name="com.example.recipeapp.User_profile" />
         <activity android:name="com.example.recipeapp.User_edit_profile" />
+        <activity android:name="com.example.recipeapp.User_management" />
 
     </application>
 
