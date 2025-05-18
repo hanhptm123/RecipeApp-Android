@@ -7,11 +7,16 @@ import android.database.Cursor;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 
 public class User_page extends AppCompatActivity {
     KET_NOI_CSDL dbHelper;
@@ -50,7 +55,7 @@ public class User_page extends AppCompatActivity {
             }
 
         }
-
+        loadRecipes();
         btnprofile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +63,31 @@ public class User_page extends AppCompatActivity {
                 startActivity(it);
             }
         });
+
+    }
+    // TÁCH HÀM loadRecipes() ra để dùng chung
+    private void loadRecipes() {
+        View viewRecipes = getLayoutInflater().inflate(R.layout.layout_fragment_recipes, null);
+        RecyclerView rv = viewRecipes.findViewById(R.id.rvRecipes);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+
+        ArrayList<Recipe> recipes = dbHelper.getAllRecipes();
+        RecipeAdapter adapter = new RecipeAdapter(this, recipes);
+        rv.setAdapter(adapter);
+
+        FrameLayout content = findViewById(R.id.content_user);
+        content.removeAllViews();
+        content.addView(viewRecipes);
+
+        // Gắn sự kiện nút Add Recipes
+
+    }
+
+    // Gọi lại loadRecipes khi quay về từ AddActivity
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadRecipes(); // Load lại dữ liệu khi Activity resume
     }
 
 }
