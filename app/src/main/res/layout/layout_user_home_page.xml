@@ -1,0 +1,208 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaf0e8"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="0dp">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#b9e87c"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/userBtnHome"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Home"
+                android:scaleType="centerInside"
+                android:src="@drawable/iconhome" />
+
+            <TextView
+                android:id="@+id/userWelcomeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="WELCOME !!!"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/userbtnLogout"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Logout"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_logout_black_24dp" />
+        </LinearLayout>
+
+        <!-- MY PROFILE -->
+        <LinearLayout
+            android:id="@+id/sectionUserProfile"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:background="#ECFAE5"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/userProfileIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="My Profile"
+                android:scaleType="centerInside"
+                android:src="@drawable/editprofile" />
+
+            <TextView
+                android:id="@+id/userProfileText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MY PROFILE"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- CREATE NEW RECIPE -->
+        <LinearLayout
+            android:id="@+id/sectionCreateRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:background="#d8f0c7"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/createRecipeIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Create New Recipe"
+                android:scaleType="centerInside"
+                android:src="@drawable/createrecipe" />
+
+            <TextView
+                android:id="@+id/createRecipeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="CREATE NEW RECIPE"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- MY RECIPE MANAGEMENT -->
+        <LinearLayout
+            android:id="@+id/sectionMyRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:background="#c4e4ae"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/myRecipesIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="My Recipe Management"
+                android:scaleType="centerInside"
+                android:src="@drawable/my_recipe_management" />
+
+            <TextView
+                android:id="@+id/myRecipesText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MY RECIPE MANAGEMENT"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- TOP FAVOURITE RECIPE -->
+        <LinearLayout
+            android:id="@+id/sectionTopFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:background="#b0db9c"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/topFavouriteIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Top Favourite Recipe"
+                android:scaleType="centerInside"
+                android:src="@drawable/topfavourite" />
+
+            <TextView
+                android:id="@+id/topFavouriteText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="TOP FAVOURITE RECIPE"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- FOOTER -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:background="#b9e87c"
+            android:elevation="4dp"
+            android:gravity="center"
+            android:text="Enjoy Cooking Every Day!!!"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>
