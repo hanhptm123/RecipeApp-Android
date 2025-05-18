@@ -51,8 +51,8 @@
             android:minHeight="20dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/profile"
-            android:contentDescription="@string/desc_profile"
-            app:tint="#000000" />
+            android:contentDescription="@string/desc_profile" />
+
     </LinearLayout>
 
     <!-- Main Content -->
