@@ -40,7 +40,7 @@
         <activity android:name="com.example.recipeapp.User_profile" />
         <activity android:name="com.example.recipeapp.User_edit_profile" />
         <activity android:name="com.example.recipeapp.User_management" />
-
+        <activity android:name="com.example.recipeapp.RecipeListApprove" />
     </application>
 
 </manifest>

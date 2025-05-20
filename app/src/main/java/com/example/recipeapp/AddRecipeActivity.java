@@ -95,7 +95,7 @@ public class AddRecipeActivity extends AppCompatActivity {
             String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             String user = getLoggedInUserName();
             String imagePath = selectedImageUri != null ? selectedImageUri.toString() : "";
-            Recipe recipe = new Recipe(title, time, type, origin, currentDate, user, imagePath);
+            Recipe recipe = new Recipe(title, time, type, origin, currentDate, user, imagePath, null, null);
 
             long recipeId = dbHelper.insertRecipe(recipe);
             if (recipeId == -1) {
