@@ -1,5 +1,6 @@
 package com.example.recipeapp;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -42,6 +43,8 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "RecipeName TEXT, " +
                 "CategoryID INTEGER, " +
                 "OriginID INTEGER, " +
+                "isApproved INTEGER, " +
+                "rejectReason TEXT,"+
                 "FOREIGN KEY(CategoryID) REFERENCES Categories(CategoryID), " +
                 "FOREIGN KEY(OriginID) REFERENCES Origins(OriginID))");
 
@@ -54,7 +57,10 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "date TEXT, " +
                 "user TEXT, " +
                 "imagePath TEXT," +
+                "isApproved INTEGER," +
+                "rejectReason TEXT,"+
                 "userImage INTEGER)");
+
         // Bảng DetailRecipeIngredient
         db.execSQL("CREATE TABLE IF NOT EXISTS DetailRecipeIngredient (" +
                 "IngredientID INTEGER, " +
@@ -132,7 +138,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         ArrayList<Recipe> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE IsApproved = 1", null);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -144,8 +150,10 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String user = cursor.getString(cursor.getColumnIndexOrThrow("user"));
                 String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
                 int userImage = cursor.getInt(cursor.getColumnIndexOrThrow("userImage"));
-
-                list.add(new Recipe(title, time, type, origin, date, user, imagePath));
+                int isApproved = cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
+                Boolean approved = isApproved == 1;
+                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
+                list.add(new Recipe(title, time, type, origin, date, user, imagePath, isApproved, rejectReason));
 
             } while (cursor.moveToNext());
 
@@ -154,6 +162,72 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         return list;
     }
+    @SuppressLint("Range")
+    public ArrayList<Recipe> getAllRecipesFull() {
+        ArrayList<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query toàn bộ, không lọc theo trạng thái
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // Lấy các cột giống getAllRecipes
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String user = cursor.getString(cursor.getColumnIndexOrThrow("user"));
+                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
+
+                // isApproved có thể null
+                int index = cursor.getColumnIndex("isApproved");
+                Integer isApproved = cursor.isNull(index) ? null : cursor.getInt(index);
+
+                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
+
+                // Tạo đối tượng Recipe (chỉnh lại constructor nếu cần)
+                Recipe recipe = new Recipe(title, time, type, origin, date, user, imagePath, isApproved, rejectReason);
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndex("id")));
+                list.add(recipe);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return list;
+    }
+
+
+    public void updateRecipeStatus(Recipe recipe) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Cập nhật trạng thái duyệt
+        if (recipe.getIsApproved() == null) {
+            values.putNull("isApproved");
+        } else {
+            values.put("isApproved", recipe.getIsApproved());
+        }
+
+        // Cập nhật lý do từ chối nếu bị từ chối
+        if (recipe.getIsApproved() != null && recipe.getIsApproved() == 0) {
+            values.put("rejectReason", recipe.getRejectReason());
+        } else {
+            values.putNull("rejectReason");
+        }
+
+        // Ghi log để debug nếu cần
+        Log.d("DB_UPDATE", "Updating ID=" + recipe.getRecipeId() + ", approved=" + recipe.getIsApproved() + ", reason=" + recipe.getRejectReason());
+
+        // Cập nhật vào bảng
+        int rows = db.update("RecipeTable", values, "id = ?", new String[]{String.valueOf(recipe.getRecipeId())});
+        Log.d("DB_UPDATE", "Rows affected: " + rows);
+
+        db.close(); // ⚠️ Nhớ đóng database
+    }
+
 
 
     public long insertRecipe(Recipe recipe) {
@@ -222,5 +296,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
 
 
-}
 
+
+
+}
