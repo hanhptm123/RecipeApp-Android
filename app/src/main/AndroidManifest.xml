@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Kết hợp cả hai quyền -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeApp"
         tools:targetApi="31">
+
         <activity
             android:name=".AddRecipeActivity"
             android:exported="false" />
@@ -23,14 +27,20 @@
             android:theme="@style/Theme.RecipeApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login" />
-        <activity android:name=".User_page" />
-        <activity android:name=".Admin_page" />
-        <activity android:name=".Sign_up" />
+
+        <!-- Kết hợp tên lớp rút gọn và đầy đủ, chọn dùng dạng đầy đủ (đề xuất hơn) -->
+        <activity android:name="com.example.recipeapp.Login" />
+        <activity android:name="com.example.recipeapp.User_page" />
+        <activity android:name="com.example.recipeapp.Admin_page" />
+        <activity android:name="com.example.recipeapp.Sign_up" />
+        <activity android:name="com.example.recipeapp.User_home_page" />
+        <activity android:name="com.example.recipeapp.User_profile" />
+        <activity android:name="com.example.recipeapp.User_edit_profile" />
+        <activity android:name="com.example.recipeapp.User_management" />
+        <activity android:name="com.example.recipeapp.RecipeListApprove" />
     </application>
 
 </manifest>

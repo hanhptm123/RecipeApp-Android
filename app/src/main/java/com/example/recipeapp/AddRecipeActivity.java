@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -66,7 +67,14 @@ public class AddRecipeActivity extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
         });
 
-
+        Button btback = (Button)findViewById(R.id.btnBack);
+        btback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(AddRecipeActivity.this, User_home_page.class);
+                startActivity(it);
+            }
+        });
         btnSave.setOnClickListener(v -> {
             String title = editTitle.getText().toString().trim();
             String time = editTime.getText().toString().trim();
@@ -87,7 +95,7 @@ public class AddRecipeActivity extends AppCompatActivity {
             String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             String user = getLoggedInUserName();
             String imagePath = selectedImageUri != null ? selectedImageUri.toString() : "";
-            Recipe recipe = new Recipe(title, time, type, origin, currentDate, user, imagePath);
+            Recipe recipe = new Recipe(title, time, type, origin, currentDate, user, imagePath, null, null);
 
             long recipeId = dbHelper.insertRecipe(recipe);
             if (recipeId == -1) {

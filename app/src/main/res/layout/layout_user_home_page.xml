@@ -23,7 +23,7 @@
             android:paddingEnd="16dp">
 
             <ImageButton
-                android:id="@+id/btnHome"
+                android:id="@+id/userBtnHome"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
@@ -32,17 +32,18 @@
                 android:src="@drawable/iconhome" />
 
             <TextView
+                android:id="@+id/userWelcomeText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="ADMIN PAGE"
+                android:text="WELCOME !!!"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ImageButton
-                android:id="@+id/btnLogout"
+                android:id="@+id/userbtnLogout"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
@@ -51,8 +52,9 @@
                 android:src="@drawable/ic_logout_black_24dp" />
         </LinearLayout>
 
-        <!-- APPROVE RECIPE -->
+        <!-- MY PROFILE -->
         <LinearLayout
+            android:id="@+id/sectionUserProfile"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -64,95 +66,70 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="213dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="APPROVE RECIPE"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <Button
-                android:id="@+id/buttonApprove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Approve" />
-
-        </LinearLayout>
-
-        <!-- TOP RECIPE -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:background="#DDF6D2"
-            android:elevation="4dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
             <ImageButton
-                android:id="@+id/btnTopRecipe"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:id="@+id/userProfileIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Top Recipe"
+                android:contentDescription="My Profile"
                 android:scaleType="centerInside"
-                android:src="@drawable/toprecipe" />
+                android:src="@drawable/editprofile" />
 
             <TextView
+                android:id="@+id/userProfileText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|end"
-                android:paddingEnd="8dp"
-                android:text="TOP RECIPE"
+                android:gravity="center"
+                android:text="MY PROFILE"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- USER MANAGEMENT -->
+        <!-- CREATE NEW RECIPE -->
         <LinearLayout
+            android:id="@+id/sectionCreateRecipe"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="8dp"
-            android:background="#CAE8BD"
+            android:background="#d8f0c7"
             android:elevation="4dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
+            <ImageButton
+                android:id="@+id/createRecipeIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Create New Recipe"
+                android:scaleType="centerInside"
+                android:src="@drawable/createrecipe" />
+
             <TextView
+                android:id="@+id/createRecipeText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="USER MANAGEMENT"
+                android:gravity="center"
+                android:text="CREATE NEW RECIPE"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <ImageButton
-                android:id="@+id/btnUserManagement"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="User Management"
-                android:scaleType="centerInside"
-                android:src="@drawable/usermanagement" />
         </LinearLayout>
 
-        <!-- TOP FAVOURITE -->
+        <!-- MY RECIPE MANAGEMENT -->
         <LinearLayout
+            android:id="@+id/sectionMyRecipes"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="8dp"
-            android:background="#B0DB9C"
+            android:background="#c4e4ae"
             android:elevation="4dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -160,7 +137,42 @@
             android:paddingEnd="16dp">
 
             <ImageButton
-                android:id="@+id/btnTopFavourite"
+                android:id="@+id/myRecipesIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="My Recipe Management"
+                android:scaleType="centerInside"
+                android:src="@drawable/my_recipe_management" />
+
+            <TextView
+                android:id="@+id/myRecipesText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MY RECIPE MANAGEMENT"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- TOP FAVOURITE RECIPE -->
+        <LinearLayout
+            android:id="@+id/sectionTopFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            android:background="#b0db9c"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/topFavouriteIcon"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:background="@android:color/transparent"
@@ -169,11 +181,11 @@
                 android:src="@drawable/topfavourite" />
 
             <TextView
+                android:id="@+id/topFavouriteText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical|end"
-                android:paddingEnd="8dp"
+                android:gravity="center"
                 android:text="TOP FAVOURITE RECIPE"
                 android:textColor="#000000"
                 android:textSize="20sp"
@@ -188,7 +200,7 @@
             android:background="#b9e87c"
             android:elevation="4dp"
             android:gravity="center"
-            android:text="Manage Smarter, Lead Better!!!"
+            android:text="Enjoy Cooking Every Day!!!"
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
