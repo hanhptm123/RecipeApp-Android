@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_search_by_category"
+        android:title="Search by Categories" />
+    <item
+        android:id="@+id/menu_search_by_ingredient"
+        android:title="Search by Ingredient" />
+</menu>
