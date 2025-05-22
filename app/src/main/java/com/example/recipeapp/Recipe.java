@@ -27,6 +27,12 @@ public class Recipe {
         this.isApproved = isApproved;
         this.rejectReason = rejectReason;
     }
+    public Recipe() {
+        // Constructor mặc định để tạo object rồi set dữ liệu sau
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     // getter cho imagePath
     public String getImagePath() {
