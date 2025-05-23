@@ -10,6 +10,8 @@ public class Recipe {
     public String user;
     private Integer isApproved;     // Có thể null
     private String rejectReason;
+    private Integer categoryId;
+
 
     public String imagePath;  // Lưu đường dẫn ảnh dạng String
     public int userImage;
@@ -27,12 +29,22 @@ public class Recipe {
         this.isApproved = isApproved;
         this.rejectReason = rejectReason;
     }
-
+    public Recipe() {
+        // Constructor mặc định để tạo object rồi set dữ liệu sau
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
     // getter cho imagePath
     public String getImagePath() {
         return imagePath;
     }
-
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
     // getter và setter các trường còn lại
     public String getTitle() {
         return title;
@@ -77,5 +89,9 @@ public class Recipe {
 
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
+    }
+
+    public String setType(String type) {
+        return type;
     }
 }

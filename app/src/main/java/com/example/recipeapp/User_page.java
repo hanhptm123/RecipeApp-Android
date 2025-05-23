@@ -7,8 +7,10 @@ import android.database.Cursor;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,7 +65,50 @@ public class User_page extends AppCompatActivity {
                 startActivity(it);
             }
         });
+        EditText editTextSearch = findViewById(R.id.editTextSearch);
+        ImageButton btnSearch = findViewById(R.id.btnsearch_user);
 
+        btnSearch.setOnClickListener(v -> {
+            String keyword = editTextSearch.getText().toString().trim();
+            if (keyword.isEmpty()) {
+                loadRecipes(); // load tất cả nếu không nhập gì
+            } else {
+                loadRecipesByKeyword(keyword); // load theo từ khóa tìm kiếm
+            }
+        });
+        ImageButton btnMenu = findViewById(R.id.btnmenu_user); // hoặc btnmenu_user nếu ở layout user
+
+        btnMenu.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(User_page.this, view);
+            popupMenu.getMenuInflater().inflate(R.menu.search_menu, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.menu_search_by_category) {
+                    startActivity(new Intent(User_page.this, SearchByCategoryActivity.class));
+                    return true;
+                } else if (id == R.id.menu_search_by_ingredient) {
+                    startActivity(new Intent(User_page.this, SearchByIngredientActivity.class));
+                    return true;
+                }
+                return false;
+            });
+
+            popupMenu.show();
+        });
+    }
+    private void loadRecipesByKeyword(String keyword) {
+        View viewRecipes = getLayoutInflater().inflate(R.layout.layout_fragment_recipes, null);
+        RecyclerView rv = viewRecipes.findViewById(R.id.rvRecipes);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+
+        ArrayList<Recipe> recipes = dbHelper.searchRecipesByName(keyword);
+        RecipeAdapter adapter = new RecipeAdapter(this, recipes);
+        rv.setAdapter(adapter);
+
+        FrameLayout content = findViewById(R.id.content_user);
+        content.removeAllViews();
+        content.addView(viewRecipes);
     }
     // TÁCH HÀM loadRecipes() ra để dùng chung
     private void loadRecipes() {

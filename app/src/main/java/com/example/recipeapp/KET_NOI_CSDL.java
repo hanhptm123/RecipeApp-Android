@@ -6,11 +6,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.icu.util.ULocale;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class KET_NOI_CSDL extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipeDB.db";
@@ -59,7 +61,8 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "imagePath TEXT," +
                 "isApproved INTEGER," +
                 "rejectReason TEXT,"+
-                "userImage INTEGER)");
+                "userImage INTEGER, " +
+                "FOREIGN KEY(CategoryId) REFERENCES Categories(CategoryID))");
 
         // Bảng DetailRecipeIngredient
         db.execSQL("CREATE TABLE IF NOT EXISTS DetailRecipeIngredient (" +
@@ -248,7 +251,14 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
             // Nếu bạn vẫn cần lưu userImage (ví dụ số), giữ lại dòng này
             values.put("userImage", recipe.getUserImage());
+            // isApproved và rejectReason có thể null
+            if (recipe.getIsApproved() != null) {
+                values.put("isApproved", recipe.getIsApproved());
+            }
 
+            if (recipe.getRejectReason() != null) {
+                values.put("rejectReason", recipe.getRejectReason());
+            }
             result = db.insert("RecipeTable", null, values);
         } catch (Exception e) {
             Log.e("InsertError", "Lỗi khi insert: " + e.getMessage());
@@ -292,6 +302,41 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         // Ở đây dùng insert bình thường, nếu trùng sẽ lỗi, bạn có thể xử lý sau
 
         return db.insert("DetailRecipeIngredient", null, values);
+    }
+
+    public ArrayList<Recipe> searchRecipesByName(String keyword) {
+        ArrayList<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE title LIKE ?", new String[]{"%" + keyword + "%"});
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                // Các trường khác tương tự
+                list.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+    public List<Recipe> searchRecipesByType(String type) {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Recipe> recipes = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE type = ?", new String[]{type});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeId(cursor.getInt(0));
+                recipe.setTitle(cursor.getString(1));
+                recipe.setType(cursor.getString(2));
+                // ... add các trường khác nếu cần
+                recipes.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return recipes;
     }
 
 
