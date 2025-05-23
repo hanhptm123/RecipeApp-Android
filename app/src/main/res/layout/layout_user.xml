@@ -51,7 +51,6 @@
             android:minHeight="36dp"
             android:src="@drawable/ic_search_black_24dp"
             app:tint="#000000" />
-
         <ImageButton
             android:id="@+id/btnprofile_user"
             android:layout_width="wrap_content"

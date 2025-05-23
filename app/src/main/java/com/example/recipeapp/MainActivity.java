@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 loadRecipesByKeyword(keyword); // load theo từ khóa tìm kiếm
             }
         });
-        ImageButton btnMenu = findViewById(R.id.btnmenu); // hoặc btnmenu_user nếu ở layout user
+        ImageButton btnMenu = findViewById(R.id.btnmenu_user); // hoặc btnmenu_user nếu ở layout user
 
         btnMenu.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(MainActivity.this, view);
@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         content.removeAllViews();
         content.addView(viewRecipes);
     }
-
     // Gọi lại loadRecipes khi quay về từ AddActivity
     @Override
     protected void onResume() {
