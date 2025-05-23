@@ -14,6 +14,8 @@ public class Recipe implements Serializable {
     public String user;
     private Integer isApproved; // Có thể null
     private String rejectReason;
+    private Integer categoryId;
+
 
     public String imagePath;    // Đường dẫn ảnh
     public int userImage;
@@ -45,6 +47,20 @@ public class Recipe implements Serializable {
     public int getRecipeId() {
         return recipeId;
     }
+
+    public Recipe() {
+        // Constructor mặc định để tạo object rồi set dữ liệu sau
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+    // getter và setter các trường còn lại
 
     public String getTitle() {
         return title;
@@ -132,9 +148,12 @@ public class Recipe implements Serializable {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
+}
+    public String setType(String type) {
+        return type;
+    }
 }

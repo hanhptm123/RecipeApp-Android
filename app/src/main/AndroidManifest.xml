@@ -40,6 +40,7 @@
         <activity android:name="com.example.recipeapp.User_profile" />
         <activity android:name="com.example.recipeapp.User_edit_profile" />
         <activity android:name="com.example.recipeapp.User_management" />
+        <activity android:name=".SearchByCategoryActivity" />
         <activity android:name="com.example.recipeapp.RecipeListApprove" />
         <activity android:name="com.example.recipeapp.RecipeDetailActivity" />
     </application>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.icu.util.ULocale;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -63,7 +64,9 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "updatedAt TEXT," +
                 "instructions TEXT," +
                 "description TEXT ," +
-                "userImage INTEGER)");
+                "rejectReason TEXT,"+
+                "userImage INTEGER, " +
+                "FOREIGN KEY(CategoryId) REFERENCES Categories(CategoryID))");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS DetailRecipeIngredient (" +
                 "IngredientID INTEGER, " +
@@ -247,6 +250,17 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             values.put("instructions", recipe.getInstructions());
             values.put("description", recipe.getDescription());
 
+            if (recipe.getIsApproved() != null) {
+                values.put("isApproved", recipe.getIsApproved());
+            } else {
+                values.putNull("isApproved");
+            }
+
+            if (recipe.getRejectReason() != null) {
+                values.put("rejectReason", recipe.getRejectReason());
+            } else {
+                values.putNull("rejectReason");
+            }
 
             result = db.insert("RecipeTable", null, values);
             db.close();
@@ -365,6 +379,57 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         values.put("IngredientID", ingredientId);
         values.put("Amount", amount);
         return db.insert("DetailRecipeIngredient", null, values);
+    }
+    public ArrayList<Recipe> searchRecipesByName(String keyword) {
+        ArrayList<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE title LIKE ?", new String[]{"%" + keyword + "%"});
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                // Các trường khác tương tự
+                list.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+    public ArrayList<Recipe> searchRecipesByName(String keyword) {
+        ArrayList<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE title LIKE ?", new String[]{"%" + keyword + "%"});
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                // Các trường khác tương tự
+                list.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+    public List<Recipe> searchRecipesByType(String type) {
+        SQLiteDatabase db = getReadableDatabase();
+        List<Recipe> recipes = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE type = ?", new String[]{type});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeId(cursor.getInt(0));
+                recipe.setTitle(cursor.getString(1));
+                recipe.setType(cursor.getString(2));
+                // ... add các trường khác nếu cần
+                recipes.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return recipes;
     }
 
 
