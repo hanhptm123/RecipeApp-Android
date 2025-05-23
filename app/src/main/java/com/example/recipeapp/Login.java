@@ -30,7 +30,8 @@ public class Login extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         checkboxShow = findViewById(R.id.checkboxShow);
 
-        dbHelper = new KET_NOI_CSDL(this, "RecipeDB.db", null, 1);
+        dbHelper = new KET_NOI_CSDL(this);
+
 
         // Button đăng nhập
         buttonLogin.setOnClickListener(new View.OnClickListener() {

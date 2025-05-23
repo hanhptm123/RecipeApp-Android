@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Ảnh món ăn -->
+        <ImageView
+            android:id="@+id/image_recipe"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/chebamau"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Tên món ăn -->
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tên món ăn"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/image_recipe"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Thời gian -->
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Thời gian: 30 phút"
+            app:layout_constraintTop_toBottomOf="@id/text_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Loại món -->
+        <TextView
+            android:id="@+id/text_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Loại: Món chính"
+            app:layout_constraintTop_toBottomOf="@id/text_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Xuất xứ -->
+        <TextView
+            android:id="@+id/text_origin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Xuất xứ: Việt Nam"
+            app:layout_constraintTop_toBottomOf="@id/text_type"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Ngày đăng -->
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Ngày đăng: 21/05/2025"
+            app:layout_constraintTop_toBottomOf="@id/text_origin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Người đăng -->
+        <TextView
+            android:id="@+id/text_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Người đăng: admin"
+            app:layout_constraintTop_toBottomOf="@id/text_date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Mô tả món ăn -->
+        <TextView
+            android:id="@+id/text_description_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Mô tả"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/text_user"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/text_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Đây là món chè ba màu truyền thống, được làm từ các loại đậu và thạch, mang lại hương vị thanh mát và ngọt ngào."
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintTop_toBottomOf="@id/text_description_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Tiêu đề: Nguyên liệu -->
+        <TextView
+            android:id="@+id/text_ingredient_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Nguyên liệu"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/text_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Danh sách nguyên liệu -->
+        <LinearLayout
+            android:id="@+id/ingredients_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/text_ingredient_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Tiêu đề: Hướng dẫn -->
+        <TextView
+            android:id="@+id/text_instruction_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Hướng dẫn nấu ăn"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/ingredients_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Nội dung hướng dẫn có thể cuộn -->
+        <ScrollView
+            android:id="@+id/instruction_scroll"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintTop_toBottomOf="@id/text_instruction_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/text_instruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bước 1: Làm sạch nguyên liệu...\nBước 2: Ướp và nấu..."
+                android:padding="8dp" />
+        </ScrollView>
+
+        <!-- Nút quay lại -->
+        <Button
+            android:id="@+id/btn_go_back"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#978E8E"
+            android:drawablePadding="8dp"
+            android:fontFamily="sans-serif"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="Go back"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/instruction_scroll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
