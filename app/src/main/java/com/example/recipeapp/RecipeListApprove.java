@@ -37,6 +37,7 @@ public class RecipeListApprove extends AppCompatActivity {
         // ✅ SỬA 2: Khởi tạo DBHelper
         dbHelper = new KET_NOI_CSDL(this, null, null, 1);
 
+
         // ✅ SỬA 3: Lấy dữ liệu từ database
         fullRecipeList = getRecipesFromDatabase();
 

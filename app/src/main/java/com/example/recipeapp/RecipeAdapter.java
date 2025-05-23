@@ -1,9 +1,12 @@
+
 package com.example.recipeapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jspecify.annotations.NonNull;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -22,10 +26,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private List<Recipe> recipeList;
     private Context context;
 
-    public RecipeAdapter(Context context, List<Recipe> recipeList) {
+    private KET_NOI_CSDL dbHelper;
+
+    public RecipeAdapter(Context context, List<Recipe> recipeList, KET_NOI_CSDL dbHelper) {
         this.recipeList = recipeList;
         this.context = context;
+        this.dbHelper = dbHelper;
     }
+
+
 
     @NonNull
     @Override
@@ -67,6 +76,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
 
         holder.imgUser.setImageResource(recipe.getUserImage());
+        holder.itemView.setOnClickListener(view -> {
+            int pos = holder.getAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                Recipe selectedRecipe = recipeList.get(pos);
+                int recipeId = selectedRecipe.getId();
+                Log.d("DB_LOG", "Clicked recipe id = " + recipeId);
+
+                ArrayList<DetailRecipeIngredient> selectedIngredients = selectedRecipe.getDetailIngredients();
+                if (selectedIngredients == null || selectedIngredients.isEmpty()) {
+                    selectedIngredients = dbHelper.getIngredientsByRecipeId(recipeId);
+                }
+
+                Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
+                intent.putExtra("recipe", selectedRecipe);  // Cần đảm bảo Recipe implement Serializable hoặc Parcelable
+                intent.putExtra("ingredients", selectedIngredients);  // Cần tương tự cho DetailRecipeIngredient list
+                view.getContext().startActivity(intent);
+            }
+        });
+
     }
 
 
@@ -90,5 +118,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             imgRecipe = itemView.findViewById(R.id.imgRecipe);
             imgUser = itemView.findViewById(R.id.imgUser);
         }
+
     }
 }

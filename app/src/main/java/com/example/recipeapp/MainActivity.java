@@ -1,11 +1,12 @@
 package com.example.recipeapp;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,12 +22,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
 
-        dbHelper = new KET_NOI_CSDL(this, "RecipeDB.db", null, 1);
 
-        // Hiển thị layout chứa tiêu đề + danh sách món ăn
+        dbHelper = new KET_NOI_CSDL(this, "RecipeDB.db", null, 2);
+        themNguyenLieuMau();
+
         loadRecipes();
 
-        // Nút login
         ImageButton btnlogin = findViewById(R.id.btnlogin);
         btnlogin.setOnClickListener(v -> {
             Intent it = new Intent(MainActivity.this, Login.class);
@@ -34,28 +35,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // TÁCH HÀM loadRecipes() ra để dùng chung
+    // Thêm dữ liệu mẫu nếu chưa có
+    private void themNguyenLieuMau() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            db.execSQL("INSERT OR IGNORE INTO DetailRecipeIngredient (RecipeID, IngredientID, Amount) VALUES (?, ?, ?)",
+                    new Object[]{1, "Đường", "2 muỗng"});
+            Toast.makeText(this, "Thêm nguyên liệu mẫu nếu chưa có", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Lỗi khi thêm nguyên liệu mẫu: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Load danh sách món ăn và nguyên liệu tương ứng
     private void loadRecipes() {
         View viewRecipes = getLayoutInflater().inflate(R.layout.layout_fragment_recipes, null);
         RecyclerView rv = viewRecipes.findViewById(R.id.rvRecipes);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<Recipe> recipes = dbHelper.getAllRecipes();
-        RecipeAdapter adapter = new RecipeAdapter(this, recipes);
+        for (Recipe r : recipes) {
+            ArrayList<DetailRecipeIngredient> ingredients = dbHelper.getIngredientsByRecipeId(r.getId());
+            r.setDetailIngredients(ingredients);
+        }
+
+        RecipeAdapter adapter = new RecipeAdapter(this, recipes, dbHelper);
         rv.setAdapter(adapter);
 
         FrameLayout content = findViewById(R.id.content);
         content.removeAllViews();
         content.addView(viewRecipes);
-
-        // Gắn sự kiện nút Add Recipes
-
     }
 
-    // Gọi lại loadRecipes khi quay về từ AddActivity
     @Override
     protected void onResume() {
         super.onResume();
-        loadRecipes(); // Load lại dữ liệu khi Activity resume
+        loadRecipes(); // Reload data when activity resumes
     }
 }
