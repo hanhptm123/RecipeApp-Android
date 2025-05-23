@@ -60,12 +60,12 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "user TEXT, " +
                 "imagePath TEXT," +
                 "isApproved INTEGER," +
-                "rejectReason TEXT," +
                 "updatedAt TEXT," +
                 "instructions TEXT," +
                 "description TEXT ," +
                 "rejectReason TEXT,"+
                 "userImage INTEGER, " +
+                "CategoryId INTEGER, " +
                 "FOREIGN KEY(CategoryId) REFERENCES Categories(CategoryID))");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS DetailRecipeIngredient (" +
@@ -380,23 +380,6 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         values.put("Amount", amount);
         return db.insert("DetailRecipeIngredient", null, values);
     }
-    public ArrayList<Recipe> searchRecipesByName(String keyword) {
-        ArrayList<Recipe> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE title LIKE ?", new String[]{"%" + keyword + "%"});
-        if (cursor.moveToFirst()) {
-            do {
-                Recipe recipe = new Recipe();
-                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                // Các trường khác tương tự
-                list.add(recipe);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return list;
-    }
-
     public ArrayList<Recipe> searchRecipesByName(String keyword) {
         ArrayList<Recipe> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

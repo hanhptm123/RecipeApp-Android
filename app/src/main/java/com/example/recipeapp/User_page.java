@@ -103,7 +103,7 @@ public class User_page extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
 
         ArrayList<Recipe> recipes = dbHelper.searchRecipesByName(keyword);
-        RecipeAdapter adapter = new RecipeAdapter(this, recipes);
+        RecipeAdapter adapter = new RecipeAdapter(this, recipes,dbHelper);
         rv.setAdapter(adapter);
 
         FrameLayout content = findViewById(R.id.content_user);
