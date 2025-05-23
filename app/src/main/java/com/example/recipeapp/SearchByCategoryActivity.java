@@ -50,7 +50,7 @@ public class SearchByCategoryActivity extends AppCompatActivity {
             results = db.searchRecipesByType(selectedType); // Hàm này chỉ lọc theo type
 
             rvResults.setLayoutManager(new LinearLayoutManager(this));
-            RecipeAdapter adapter = new RecipeAdapter(this, results);
+            RecipeAdapter adapter = new RecipeAdapter(this, results,db);
             rvResults.setAdapter(adapter);
         });
     }
