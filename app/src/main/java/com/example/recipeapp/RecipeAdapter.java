@@ -1,4 +1,3 @@
-
 package com.example.recipeapp;
 
 import android.content.Context;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,8 +34,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         this.dbHelper = dbHelper;
     }
 
-
-
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,6 +51,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.tvDate.setText("Posted On: " + recipe.getDate());
         holder.tvUser.setText(recipe.getUser());
 
+        // Load ảnh món ăn
         String imagePath = recipe.getImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
@@ -76,6 +75,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
 
         holder.imgUser.setImageResource(recipe.getUserImage());
+
+        // Lấy điểm trung bình số sao từ CSDL theo RecipeID
+        float avgRating = dbHelper.getAverageRatingByRecipeId(recipe.getId());
+        holder.ratingBar.setRating(avgRating);
+
         holder.itemView.setOnClickListener(view -> {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
@@ -89,14 +93,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 }
 
                 Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
-                intent.putExtra("recipe", selectedRecipe);  // Cần đảm bảo Recipe implement Serializable hoặc Parcelable
-                intent.putExtra("ingredients", selectedIngredients);  // Cần tương tự cho DetailRecipeIngredient list
+                intent.putExtra("recipe", selectedRecipe);  // Recipe cần implement Serializable hoặc Parcelable
+                intent.putExtra("ingredients", selectedIngredients);  // DetailRecipeIngredient list cũng vậy
                 view.getContext().startActivity(intent);
             }
         });
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -106,6 +108,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvTime, tvType, tvOrigin, tvDate, tvUser;
         ImageView imgRecipe, imgUser;
+        RatingBar ratingBar;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -117,7 +120,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             tvUser = itemView.findViewById(R.id.tvUser);
             imgRecipe = itemView.findViewById(R.id.imgRecipe);
             imgUser = itemView.findViewById(R.id.imgUser);
+            ratingBar = itemView.findViewById(R.id.ratingBar); // Thêm dòng này
         }
-
     }
 }

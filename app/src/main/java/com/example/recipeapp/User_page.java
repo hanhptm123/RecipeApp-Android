@@ -57,14 +57,43 @@ public class User_page extends AppCompatActivity {
             }
 
         }
+        String role = "user"; // mặc định là user
+        Cursor cursor = dbHelper.Doc_bang("SELECT Avatar, Role FROM Users WHERE UserID = " + userId);
+        String avatarName = null;
+        if (cursor.moveToFirst()) {
+            avatarName = cursor.getString(cursor.getColumnIndex("Avatar"));
+            role = cursor.getString(cursor.getColumnIndex("Role")); // lấy role
+        }
+        cursor.close();
+
         loadRecipes();
+        String finalRole = role; // vì dùng trong inner class
         btnprofile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(User_page.this, User_home_page.class);
-                startActivity(it);
+                if (finalRole.equalsIgnoreCase("admin")) {
+                    PopupMenu popupMenu = new PopupMenu(User_page.this, v);
+                    popupMenu.getMenu().add("Admin Page");
+                    popupMenu.getMenu().add("Your World");
+
+                    popupMenu.setOnMenuItemClickListener(item -> {
+                        String title = item.getTitle().toString();
+                        if (title.equals("Admin Page")) {
+                            startActivity(new Intent(User_page.this, Admin_page.class));
+                        } else if (title.equals("Your World")) {
+                            startActivity(new Intent(User_page.this, User_home_page.class));
+                        }
+                        return true;
+                    });
+
+                    popupMenu.show();
+                } else {
+                    // user bình thường → vào luôn
+                    startActivity(new Intent(User_page.this, User_home_page.class));
+                }
             }
         });
+
         EditText editTextSearch = findViewById(R.id.editTextSearch);
         ImageButton btnSearch = findViewById(R.id.btnsearch_user);
 
