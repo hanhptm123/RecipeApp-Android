@@ -57,10 +57,12 @@ public class MainActivity extends AppCompatActivity {
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.menu_search_by_category) {
-                    startActivity(new Intent(MainActivity.this, SearchByCategoryActivity.class));
+                    Intent intent = new Intent(MainActivity.this, SearchByCategoryActivity.class);
+                    startActivity(intent);
                     return true;
                 } else if (id == R.id.menu_search_by_ingredient) {
-                    startActivity(new Intent(MainActivity.this, SearchByIngredientActivity.class));
+                    Intent intent = new Intent(MainActivity.this, searchRecipesByIngredient.class);
+                    startActivity(intent);
                     return true;
                 }
                 return false;

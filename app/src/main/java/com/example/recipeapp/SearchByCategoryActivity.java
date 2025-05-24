@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SearchByCategoryActivity extends AppCompatActivity {
     Spinner spinnerType;
-    Button btnSearch;
+    Button btnSearch, btnBack;
     RecyclerView rvResults;
     KET_NOI_CSDL db;
     List<Recipe> results;
@@ -40,6 +40,8 @@ public class SearchByCategoryActivity extends AppCompatActivity {
         spinnerType = findViewById(R.id.spinnerType); // Đảm bảo ID là spinnerType trong XML
         btnSearch = findViewById(R.id.btnSearchCategory);
         rvResults = findViewById(R.id.rvResults);
+        btnBack = findViewById(R.id.btnBack);  // <-- Thêm dòng này
+
 
         setupSpinnerType();
 
@@ -52,6 +54,10 @@ public class SearchByCategoryActivity extends AppCompatActivity {
             rvResults.setLayoutManager(new LinearLayoutManager(this));
             RecipeAdapter adapter = new RecipeAdapter(this, results,db);
             rvResults.setAdapter(adapter);
+        });
+        btnBack.setOnClickListener(v -> {
+            // Quay về activity trước
+            finish();
         });
     }
 }

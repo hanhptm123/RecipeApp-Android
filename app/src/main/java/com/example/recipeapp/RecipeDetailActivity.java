@@ -2,7 +2,6 @@ package com.example.recipeapp;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +16,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private ImageView imageRecipe;
     private TextView textTitle, textTime, textType, textOrigin, textDate, textUser, textInstruction, textDescription;
+    private TextView textCountView; // Thêm biến TextView cho lượt xem
     private LinearLayout ingredientsContainer;
     private Button btnGoBack;
 
@@ -31,7 +31,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Log.d("INGREDIENT_LOG", detail.getIngredientName() + " - " + detail.getAmount());
         }
 
-
         // Ánh xạ view
         imageRecipe = findViewById(R.id.image_recipe);
         textTitle = findViewById(R.id.text_title);
@@ -43,6 +42,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         textInstruction = findViewById(R.id.text_instruction);
         ingredientsContainer = findViewById(R.id.ingredients_container);
         textDescription = findViewById(R.id.text_description);
+        textCountView = findViewById(R.id.text_count_view); // Ánh xạ lượt xem
 
         btnGoBack = findViewById(R.id.btn_go_back);
 
@@ -61,6 +61,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
             textUser.setText("Người đăng: " + recipe.getUser());
             textDescription.setText(recipe.getDescription());
             textInstruction.setText(recipe.getInstructions());
+
+            // Hiển thị lượt xem
+            textCountView.setText("Lượt xem: " + recipe.getCountView());
 
             // Nếu có ảnh từ path thì load (tạm dùng ảnh mặc định)
             imageRecipe.setImageResource(R.drawable.chebamau);

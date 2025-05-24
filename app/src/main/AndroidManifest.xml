@@ -42,6 +42,7 @@
         <activity android:name="com.example.recipeapp.User_management" />
         <activity android:name=".SearchByCategoryActivity" />
         <activity android:name="com.example.recipeapp.RecipeListApprove" />
+        <activity android:name=".searchRecipesByIngredient" />
         <activity android:name="com.example.recipeapp.RecipeDetailActivity" />
     </application>
 

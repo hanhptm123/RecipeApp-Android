@@ -83,17 +83,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 int recipeId = selectedRecipe.getId();
                 Log.d("DB_LOG", "Clicked recipe id = " + recipeId);
 
+                // Tăng lượt xem
+                dbHelper.increaseCountView(recipeId);
+
                 ArrayList<DetailRecipeIngredient> selectedIngredients = selectedRecipe.getDetailIngredients();
                 if (selectedIngredients == null || selectedIngredients.isEmpty()) {
                     selectedIngredients = dbHelper.getIngredientsByRecipeId(recipeId);
                 }
 
                 Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
-                intent.putExtra("recipe", selectedRecipe);  // Cần đảm bảo Recipe implement Serializable hoặc Parcelable
-                intent.putExtra("ingredients", selectedIngredients);  // Cần tương tự cho DetailRecipeIngredient list
+                intent.putExtra("recipe", selectedRecipe);  // Recipe cần implement Serializable hoặc Parcelable
+                intent.putExtra("ingredients", selectedIngredients);  // Cần tương tự cho list DetailRecipeIngredient
                 view.getContext().startActivity(intent);
             }
         });
+
 
     }
 

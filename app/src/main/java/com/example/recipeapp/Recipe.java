@@ -15,6 +15,7 @@ import java.util.ArrayList;
         private Integer isApproved; // Có thể null
         private String rejectReason;
         private Integer categoryId;
+        private int countView; // Thêm biến này để lưu số lượt xem
 
 
         public String imagePath;    // Đường dẫn ảnh
@@ -24,10 +25,11 @@ import java.util.ArrayList;
 
         private String description;
         // Constructor đầy đủ (bổ sung instructions và updatedAt)
-        public Recipe(int id, String title, String time, String type, String origin,
+        public Recipe(int recipeId, String title, String time, String type, String origin,
                       String date, String updatedAt, String user, String imagePath,
-                      Integer isApproved, String rejectReason, String instructions, String description) {
-            this.recipeId = id;
+                      Integer isApproved, String rejectReason, String instructions,
+                      String description, int countView) {
+            this.recipeId = recipeId;
             this.title = title;
             this.time = time;
             this.type = type;
@@ -36,18 +38,24 @@ import java.util.ArrayList;
             this.updatedAt = updatedAt;
             this.user = user;
             this.imagePath = imagePath;
-            this.userImage = userImage;
             this.isApproved = isApproved;
             this.rejectReason = rejectReason;
             this.instructions = instructions;
             this.description = description;
+            this.countView = countView;
         }
 
         // Getters
         public int getRecipeId() {
             return recipeId;
         }
+        public int getCountView() {
+            return countView;
+        }
 
+        public void setCountView(int countView) {
+            this.countView = countView;
+        }
         public Recipe() {
             // Constructor mặc định để tạo object rồi set dữ liệu sau
         }
