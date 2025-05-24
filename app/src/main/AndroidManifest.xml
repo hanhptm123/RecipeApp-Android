@@ -45,6 +45,9 @@
         <activity android:name="com.example.recipeapp.RecipeDetailActivity" />
         <activity android:name="com.example.recipeapp.EditRecipeActivity" />
         <activity android:name="com.example.recipeapp.MyRecipesActivity" />
+        <activity android:name=".searchRecipesByIngredient" />
+        <activity android:name=".TopRecipeActivity"/>
+        <activity android:name="com.example.recipeapp.Favourite_list" />
     </application>
 
 </manifest>

@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSharedPreferences("UserPrefs", MODE_PRIVATE).edit().clear().apply();
+
         setContentView(R.layout.layout_main);
 
 
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, SearchByCategoryActivity.class));
                     return true;
                 } else if (id == R.id.menu_search_by_ingredient) {
-                    startActivity(new Intent(MainActivity.this, SearchByIngredientActivity.class));
+                    startActivity(new Intent(MainActivity.this, searchRecipesByIngredient.class));
                     return true;
                 }
                 return false;

@@ -57,14 +57,64 @@ public class User_page extends AppCompatActivity {
             }
 
         }
+        String role = "user"; // mặc định là user
+        Cursor cursor = dbHelper.Doc_bang("SELECT Avatar, Role FROM Users WHERE UserID = " + userId);
+        String avatarName = null;
+        if (cursor.moveToFirst()) {
+            avatarName = cursor.getString(cursor.getColumnIndex("Avatar"));
+            role = cursor.getString(cursor.getColumnIndex("Role")); // lấy role
+        }
+        cursor.close();
+
         loadRecipes();
+        String finalRole = role; // vì dùng trong inner class
         btnprofile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(User_page.this, User_home_page.class);
-                startActivity(it);
+                PopupMenu popupMenu = new PopupMenu(User_page.this, v);
+
+                if (finalRole.equalsIgnoreCase("admin")) {
+                    popupMenu.getMenu().add("Admin Page");
+                    popupMenu.getMenu().add("Your World");
+                    popupMenu.getMenu().add("Your favourite list");
+                } else {
+                    popupMenu.getMenu().add("Your World");
+                    popupMenu.getMenu().add("Your favourite list");
+                }
+                popupMenu.getMenu().add("Logout"); // Thêm logout vào cả admin và user
+
+
+                popupMenu.setOnMenuItemClickListener(item -> {
+                    String title = item.getTitle().toString();
+                    if (title.equals("Admin Page")) {
+                        startActivity(new Intent(User_page.this, Admin_page.class));
+                    } else if (title.equals("Your World")) {
+                        startActivity(new Intent(User_page.this, User_home_page.class));
+                    } else if (title.equals("Your favourite list")) {
+                        startActivity(new Intent(User_page.this, Favourite_list.class));
+                    } else if (title.equals("Logout")) {
+                        new androidx.appcompat.app.AlertDialog.Builder(User_page.this)
+                                .setTitle("Confirm Logout")
+                                .setMessage("Are you sure you want to logout?")
+                                .setPositiveButton("Yes", (dialog, which) -> {
+                                    getSharedPreferences("UserPrefs", MODE_PRIVATE).edit().clear().apply();
+                                    Intent intent = new Intent(User_page.this, Login.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
+                    }
+                    return true;
+                });
+
+
+                popupMenu.show();
             }
         });
+
+
         EditText editTextSearch = findViewById(R.id.editTextSearch);
         ImageButton btnSearch = findViewById(R.id.btnsearch_user);
 
@@ -88,7 +138,7 @@ public class User_page extends AppCompatActivity {
                     startActivity(new Intent(User_page.this, SearchByCategoryActivity.class));
                     return true;
                 } else if (id == R.id.menu_search_by_ingredient) {
-                    startActivity(new Intent(User_page.this, SearchByIngredientActivity.class));
+                    startActivity(new Intent(User_page.this, searchRecipesByIngredient.class));
                     return true;
                 }
                 return false;

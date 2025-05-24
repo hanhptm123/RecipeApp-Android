@@ -1,8 +1,8 @@
-
 package com.example.recipeapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,8 +27,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     private List<Recipe> recipeList;
     private Context context;
+
     private int currentUserId;
     private KET_NOI_CSDL dbHelper;
+    private int userId;
 
     public RecipeAdapter(Context context, List<Recipe> recipeList, KET_NOI_CSDL dbHelper) {
         this.recipeList = recipeList;
@@ -35,7 +39,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         this.currentUserId = currentUserId;
     }
 
-
+        // Lấy UserID từ SharedPreferences
+        SharedPreferences sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        this.userId = sharedPref.getInt("UserID", -1); // -1 nếu không có
+    }
 
     @NonNull
     @Override
@@ -54,6 +61,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.tvDate.setText("Posted On: " + recipe.getDate());
         holder.tvUser.setText(String.valueOf(recipe.getUserId()));
 
+        // Load ảnh món ăn
         String imagePath = recipe.getImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
@@ -77,12 +85,42 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
 
         holder.imgUser.setImageResource(recipe.getUserImage());
+
+        // Lấy điểm trung bình số sao từ CSDL
+        float avgRating = dbHelper.getAverageRatingByRecipeId(recipe.getId());
+        holder.ratingBar.setRating(avgRating);
+
+        // Kiểm tra đã yêu thích chưa
+        boolean isFavourite = dbHelper.isRecipeFavourited(userId, recipe.getId());
+        holder.btnFavorite.setImageResource(isFavourite ? R.drawable.heart_color : R.drawable.heart_no_color);
+
+        // Xử lý nhấn nút yêu thích
+        holder.btnFavorite.setOnClickListener(view -> {
+            if (userId == -1) {
+                // Chưa đăng nhập
+                Toast.makeText(context, "Please login to add favourites.", Toast.LENGTH_SHORT).show();
+            } else {
+                // Đã đăng nhập → xử lý yêu thích
+                boolean currentFav = dbHelper.isRecipeFavourited(userId, recipe.getId());
+                if (currentFav) {
+                    dbHelper.removeFavourite(userId, recipe.getId());
+                    holder.btnFavorite.setImageResource(R.drawable.heart_no_color);
+                } else {
+                    dbHelper.addFavourite(userId, recipe.getId());
+                    holder.btnFavorite.setImageResource(R.drawable.heart_color);
+                }
+            }
+        });
+
+
+        // Chuyển sang chi tiết công thức
         holder.itemView.setOnClickListener(view -> {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 Recipe selectedRecipe = recipeList.get(pos);
                 int recipeId = selectedRecipe.getId();
                 Log.d("DB_LOG", "Clicked recipe id = " + recipeId);
+                dbHelper.increaseCountView(recipeId);
 
                 ArrayList<DetailRecipeIngredient> selectedIngredients = selectedRecipe.getDetailIngredients();
                 if (selectedIngredients == null || selectedIngredients.isEmpty()) {
@@ -90,15 +128,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 }
 
                 Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
-                intent.putExtra("recipe", selectedRecipe);  // Cần đảm bảo Recipe implement Serializable hoặc Parcelable
+
+                intent.putExtra("recipe", selectedRecipe); 
                 intent.putExtra("ingredients", selectedIngredients);
                 intent.putExtra("currentUserId", currentUserId);
                 view.getContext().startActivity(intent);
             }
         });
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -107,7 +144,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvTime, tvType, tvOrigin, tvDate, tvUser;
-        ImageView imgRecipe, imgUser;
+        ImageView imgRecipe, imgUser, btnFavorite;
+        RatingBar ratingBar;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,7 +157,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             tvUser = itemView.findViewById(R.id.tvUser);
             imgRecipe = itemView.findViewById(R.id.imgRecipe);
             imgUser = itemView.findViewById(R.id.imgUser);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
+            btnFavorite = itemView.findViewById(R.id.btnFavorite);
         }
+    }
 
+    public void updateData(List<Recipe> newRecipeList) {
+        this.recipeList = newRecipeList;
+        notifyDataSetChanged();
     }
 }

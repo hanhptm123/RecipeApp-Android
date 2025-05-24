@@ -14,7 +14,7 @@
     <string name="by">By</string>
     <string name="minutes">minutes</string>
     <string name="recipe_name">Recipe Name</string>
-
+    <string name="favorite_button">Yêu thích công thức</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

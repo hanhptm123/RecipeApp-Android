@@ -61,7 +61,12 @@ public class Admin_page extends AppCompatActivity {
             Intent it = new Intent(Admin_page.this, RecipeListApprove.class);
             startActivity(it);
         });
-
+        ImageButton btnTopRecipe = findViewById(R.id.btnTopRecipe);
+       btnTopRecipe.setOnClickListener(v -> {
+           Log.d("Admin_page", "buttonTopRecipe clicked");
+           Intent it = new Intent(Admin_page.this, TopRecipeActivity.class);
+           startActivity(it);
+       });
 
 
     }

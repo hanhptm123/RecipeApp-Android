@@ -1,5 +1,6 @@
 package com.example.recipeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -57,6 +58,13 @@ public class RecipeListApprove extends AppCompatActivity {
                 recipe.setIsApproved(0); // ✅ Đảm bảo trạng thái bị từ chối
                 updateRecipeStatusInDatabase(recipe); // ✅ SỬA 4: cập nhật trạng thái
                 adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onViewDetail(Recipe recipe) {
+                Intent intent = new Intent(RecipeListApprove.this, RecipeDetailActivity.class);
+                intent.putExtra("recipe_id", recipe.getId());
+                startActivity(intent);
             }
         });
 

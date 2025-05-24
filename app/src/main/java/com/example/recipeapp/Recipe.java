@@ -23,12 +23,14 @@ import java.util.ArrayList;
         public int userImage;
 
         private String instructions; // Hướng dẫn nấu ăn
+        private int countView; // Thêm biến này để lưu số lượt xem
+
 
         private String description;
         // Constructor đầy đủ (bổ sung instructions và updatedAt)
         public Recipe(int id, String title, String time, String type, String origin,
                       String date, String updatedAt, int userId, String imagePath,
-                      Integer isApproved, String rejectReason, String instructions, String description) {
+                      Integer isApproved, String rejectReason, String instructions, String description, int countView) {
             this.recipeId = id;
             this.title = title;
             this.time = time;
@@ -43,6 +45,8 @@ import java.util.ArrayList;
             this.rejectReason = rejectReason;
             this.instructions = instructions;
             this.description = description;
+            this.countView = countView;
+
         }
 
         // Getters
@@ -71,7 +75,13 @@ import java.util.ArrayList;
         public String getTime() {
             return time;
         }
+        public int getCountView() {
+            return countView;
+        }
 
+        public void setCountView(int countView) {
+            this.countView = countView;
+        }
         public String getType() {
             return type;
         }
@@ -154,6 +164,7 @@ import java.util.ArrayList;
         public String setType(String type) {
             return type;
         }
+
         public void setTime(String time) {
             this.time = time;
         }
@@ -177,6 +188,21 @@ import java.util.ArrayList;
         public void setImagePath(String imagePath) {
             this.imagePath = imagePath;
         }
+
+
+        public int getUserId() {
+            if (user != null) {
+                try {
+                    return Integer.parseInt(user);
+                } catch (NumberFormatException e) {
+                    // Nếu user không phải là số hợp lệ
+                    return -1; // hoặc giá trị báo lỗi
+                }
+            }
+            return -1; // nếu user null
+        }
+
+
 
     }
 

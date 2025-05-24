@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
     public interface OnRecipeActionListener {
         void onApprove(Recipe recipe);
         void onReject(Recipe recipe);
+        void onViewDetail(Recipe recipe);
     }
 
     public RecipeApproveAdapter(List<Recipe> recipeList, OnRecipeActionListener listener) {
@@ -43,17 +45,37 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
         holder.tvRecipeTitle.setText(recipe.getTitle());
         holder.tvRecipeUser.setText("By: " + recipe.getUserId());
         holder.tvRecipeDate.setText(recipe.getDate());
+        holder.btnViewDetail.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onViewDetail(recipe);
+            }
+        });
+
+        // Load image if available (assuming recipe has getImageResId() or getImageUrl())
+        // Here giả sử getImageResId() trả về drawable id, nếu null thì đặt ảnh mặc định
+        if (recipe.getImagePath() != null && !recipe.getImagePath().isEmpty()) {
+            try {
+                int imageResId = Integer.parseInt(recipe.getImagePath());
+                holder.imgRecipe.setImageResource(imageResId);
+            } catch (NumberFormatException e) {
+                holder.imgRecipe.setImageResource(R.drawable.pho); // ảnh mặc định nếu không parse được
+            }
+        } else {
+            holder.imgRecipe.setImageResource(R.drawable.pho); // ảnh mặc định nếu null hoặc rỗng
+        }
+
 
         Integer isApproved = recipe.getIsApproved();
 
         if (isApproved == null) {
-            // Pending - hiển thị nút
+            // Pending - hiển thị nút duyệt / từ chối
             holder.llButtons.setVisibility(View.VISIBLE);
             holder.tvApprovedStatus.setVisibility(View.GONE);
             holder.tvRejectReason.setVisibility(View.GONE);
             holder.etRejectReasonInput.setVisibility(View.GONE);
             holder.btnConfirmReject.setVisibility(View.GONE);
         } else if (isApproved == 1) {
+            // Đã duyệt
             holder.llButtons.setVisibility(View.GONE);
             holder.tvApprovedStatus.setVisibility(View.VISIBLE);
             holder.tvApprovedStatus.setText("Approved");
@@ -61,6 +83,7 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
             holder.etRejectReasonInput.setVisibility(View.GONE);
             holder.btnConfirmReject.setVisibility(View.GONE);
         } else {
+            // Bị từ chối
             holder.llButtons.setVisibility(View.GONE);
             holder.tvApprovedStatus.setVisibility(View.GONE);
             holder.tvRejectReason.setVisibility(View.VISIBLE);
@@ -91,7 +114,6 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
         });
     }
 
-
     @Override
     public int getItemCount() {
         return recipeList.size();
@@ -103,7 +125,8 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
         Button btnApprove, btnReject;
         EditText etRejectReasonInput;
         Button btnConfirmReject;
-
+        ImageView imgRecipe;
+        Button btnViewDetail;
 
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -117,6 +140,8 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
             btnReject = itemView.findViewById(R.id.btnReject);
             etRejectReasonInput = itemView.findViewById(R.id.etRejectReasonInput);
             btnConfirmReject = itemView.findViewById(R.id.btnConfirmReject);
+            imgRecipe = itemView.findViewById(R.id.imgRecipe);
+            btnViewDetail = itemView.findViewById(R.id.btnViewDetail);
 
         }
     }

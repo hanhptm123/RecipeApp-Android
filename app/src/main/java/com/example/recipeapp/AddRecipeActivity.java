@@ -128,7 +128,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                     null,
                     null,
                     instructions,
-                    description
+                    description,
+                    0
             );
 
             long recipeId = dbHelper.insertRecipe(recipe);
