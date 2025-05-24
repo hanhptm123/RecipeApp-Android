@@ -21,13 +21,16 @@ import java.util.ArrayList;
         public int userImage;
 
         private String instructions; // Hướng dẫn nấu ăn
+        private int countView; // Thêm biến này để lưu số lượt xem
+
 
         private String description;
         // Constructor đầy đủ (bổ sung instructions và updatedAt)
-        public Recipe(int id, String title, String time, String type, String origin,
+        public Recipe(int recipeId, String title, String time, String type, String origin,
                       String date, String updatedAt, String user, String imagePath,
-                      Integer isApproved, String rejectReason, String instructions, String description) {
-            this.recipeId = id;
+                      Integer isApproved, String rejectReason, String instructions,
+                      String description, int countView) {
+            this.recipeId = recipeId;
             this.title = title;
             this.time = time;
             this.type = type;
@@ -41,6 +44,8 @@ import java.util.ArrayList;
             this.rejectReason = rejectReason;
             this.instructions = instructions;
             this.description = description;
+            this.countView = countView;
+
         }
 
         // Getters
@@ -69,7 +74,13 @@ import java.util.ArrayList;
         public String getTime() {
             return time;
         }
+        public int getCountView() {
+            return countView;
+        }
 
+        public void setCountView(int countView) {
+            this.countView = countView;
+        }
         public String getType() {
             return type;
         }

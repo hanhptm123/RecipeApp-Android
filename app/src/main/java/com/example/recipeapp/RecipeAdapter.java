@@ -86,6 +86,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 Recipe selectedRecipe = recipeList.get(pos);
                 int recipeId = selectedRecipe.getId();
                 Log.d("DB_LOG", "Clicked recipe id = " + recipeId);
+                dbHelper.increaseCountView(recipeId);
 
                 ArrayList<DetailRecipeIngredient> selectedIngredients = selectedRecipe.getDetailIngredients();
                 if (selectedIngredients == null || selectedIngredients.isEmpty()) {

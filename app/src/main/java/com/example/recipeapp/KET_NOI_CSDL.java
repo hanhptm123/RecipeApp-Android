@@ -66,6 +66,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "rejectReason TEXT,"+
                 "userImage INTEGER, " +
                 "CategoryId INTEGER, " +
+                "countView INTEGER DEFAULT 0," +
                 "FOREIGN KEY(CategoryId) REFERENCES Categories(CategoryID))");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS DetailRecipeIngredient (" +
@@ -160,10 +161,10 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 int isApproved = cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
                 String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                int countView = cursor.getInt(cursor.getColumnIndexOrThrow("countView"));
 
-
-                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, user, imagePath, isApproved, rejectReason, instructions,description);
-
+                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, user,
+                        imagePath, isApproved, rejectReason, instructions, description, countView);
                 recipe.userImage = userImage;
                 list.add(recipe);
             } while (cursor.moveToNext());
@@ -197,8 +198,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
 
-                Recipe recipe = new Recipe(1,title, time, type, origin, date, updatedAt, user, imagePath, isApproved, rejectReason, instructions, description);
-                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndex("id")));
+                Recipe recipe = new Recipe(1,title, time, type, origin, date, updatedAt, user, imagePath, isApproved, rejectReason, instructions, description, 0);                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndex("id")));
                 list.add(recipe);
             } while (cursor.moveToNext());
 
@@ -385,13 +385,22 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
     public ArrayList<Recipe> searchRecipesByName(String keyword) {
         ArrayList<Recipe> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE title LIKE ?", new String[]{"%" + keyword + "%"});
+        Cursor cursor = db.rawQuery(
+                "SELECT r.*, AVG(rt.RatingScore) as avgRating " +
+                        "FROM RecipeTable r " +
+                        "LEFT JOIN Ratings rt ON r.id = rt.RecipeID " +
+                        "WHERE r.title LIKE ? " +
+                        "GROUP BY r.id " +
+                        "ORDER BY avgRating DESC",
+                new String[]{"%" + keyword + "%"}
+        );
+
         if (cursor.moveToFirst()) {
             do {
                 Recipe recipe = new Recipe();
                 recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
                 recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                // Các trường khác tương tự
+                // Thêm các trường khác nếu cần
                 list.add(recipe);
             } while (cursor.moveToNext());
         }
@@ -399,20 +408,70 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         return list;
     }
     public List<Recipe> searchRecipesByType(String type) {
-        SQLiteDatabase db = getReadableDatabase();
         List<Recipe> recipes = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT * FROM RecipeTable WHERE type = ?", new String[]{type});
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT r.*, AVG(rt.RatingScore) as avgRating " +
+                        "FROM RecipeTable r " +
+                        "LEFT JOIN Ratings rt ON r.id = rt.RecipeID " +
+                        "WHERE r.type = ? " +
+                        "GROUP BY r.id " +
+                        "ORDER BY avgRating DESC",
+                new String[]{type}
+        );
 
         if (cursor.moveToFirst()) {
             do {
                 Recipe recipe = new Recipe();
-                recipe.setRecipeId(cursor.getInt(0));
-                recipe.setTitle(cursor.getString(1));
-                recipe.setType(cursor.getString(2));
-                // ... add các trường khác nếu cần
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                recipe.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                // Thêm các trường khác nếu cần
                 recipes.add(recipe);
             } while (cursor.moveToNext());
         }
+        cursor.close();
+        return recipes;
+    }
+    public ArrayList<Recipe> searchRecipesByIngredient(String keyword) {
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query =
+                "SELECT r.*, AVG(rt.RatingScore) as avgRating " +
+                        "FROM RecipeTable r " +
+                        "JOIN DetailRecipeIngredient dri ON r.id = dri.RecipeID " +
+                        "JOIN Ingredients i ON dri.IngredientID = i.IngredientID " +
+                        "LEFT JOIN Ratings rt ON r.id = rt.RecipeID " +
+                        "WHERE i.IngredientName LIKE ? AND r.isApproved = 1 " +
+                        "GROUP BY r.id " +
+                        "ORDER BY avgRating DESC";
+
+        Cursor cursor = db.rawQuery(query, new String[]{"%" + keyword + "%"});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe(
+                        cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("time")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("type")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("origin")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("date")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("updatedAt")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("user")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("imagePath")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("isApproved")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("rejectReason")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("instructions")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("countView"))
+                );
+                recipe.userImage = cursor.getInt(cursor.getColumnIndexOrThrow("userImage"));
+                recipes.add(recipe);
+            } while (cursor.moveToNext());
+        }
+
         cursor.close();
         return recipes;
     }
@@ -522,4 +581,9 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         return average;
     }
 
+    public void increaseCountView(int recipeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE RecipeTable SET countView = countView + 1 WHERE id = ?", new Object[]{recipeId});
+        db.close();
+    }
 }
