@@ -43,7 +43,7 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
         Recipe recipe = recipeList.get(position);
 
         holder.tvRecipeTitle.setText(recipe.getTitle());
-        holder.tvRecipeUser.setText("By: " + recipe.getUser());
+        holder.tvRecipeUser.setText("By: " + recipe.getUserId());
         holder.tvRecipeDate.setText(recipe.getDate());
         holder.btnViewDetail.setOnClickListener(v -> {
             if (listener != null) {

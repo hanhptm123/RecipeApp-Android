@@ -1,6 +1,7 @@
 package com.example.recipeapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -57,6 +58,18 @@ public class User_home_page extends AppCompatActivity {
             public void onClick(View v) {
                 Intent it = new Intent(User_home_page.this, AddRecipeActivity.class);
                 startActivity(it);
+            }
+        });
+        ImageButton btnManage = findViewById(R.id.btn_manage_my_recipes);
+        btnManage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                int userId = prefs.getInt("UserID", -1); // Lấy userId từ SharedPreferences
+
+                Intent intent = new Intent(User_home_page.this, MyRecipesActivity.class);
+                intent.putExtra("userId", userId); // Sử dụng biến đúng đã lấy ở trên
+                startActivity(intent);
             }
         });
 

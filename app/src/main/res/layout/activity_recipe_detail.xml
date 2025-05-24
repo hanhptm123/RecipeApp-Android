@@ -2,462 +2,178 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F1F8E9"> <!-- Light green background -->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Ảnh món ăn -->
-        <ImageView
-            android:id="@+id/image_recipe"
-            android:layout_width="0dp"
+        <!-- Recipe Image -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/chebamau"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-        <TextView
-            android:id="@+id/text_count_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lượt xem: 0"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@id/image_recipe"
-            app:layout_constraintStart_toStartOf="parent" />
-        <!-- Tên món ăn -->
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp">
+
+            <ImageView
+                android:id="@+id/image_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/chebamau" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Recipe Title -->
         <TextView
             android:id="@+id/text_title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tên món ăn"
-            android:textSize="22sp"
+            android:text="Recipe Title"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginTop="50dp"
-            app:layout_constraintTop_toBottomOf="@id/image_recipe"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textColor="#2E7D32"
+            android:paddingBottom="8dp" />
 
-        <!-- Thời gian -->
-        <TextView
-            android:id="@+id/text_time"
-            android:layout_width="0dp"
+        <!-- Additional Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thời gian: 30 phút"
-            app:layout_constraintTop_toBottomOf="@id/text_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle">
 
-        <!-- Loại món -->
-        <TextView
-            android:id="@+id/text_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Loại: Món chính"
-            app:layout_constraintTop_toBottomOf="@id/text_time"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⏱ Time: 30 minutes"
+                android:textColor="#558B2F" />
 
-        <!-- Xuất xứ -->
-        <TextView
-            android:id="@+id/text_origin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Xuất xứ: Việt Nam"
-            app:layout_constraintTop_toBottomOf="@id/text_type"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/text_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🍲 Type: Main Dish"
+                android:textColor="#558B2F" />
 
-        <!-- Ngày đăng -->
-        <TextView
-            android:id="@+id/text_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Ngày đăng: 21/05/2025"
-            app:layout_constraintTop_toBottomOf="@id/text_origin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/text_origin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📍 Origin: Vietnam"
+                android:textColor="#558B2F" />
 
-        <!-- Người đăng -->
-        <TextView
-            android:id="@+id/text_user"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Người đăng: admin"
-            app:layout_constraintTop_toBottomOf="@id/text_date"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/text_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🗓 Date Posted: 21/05/2025"
+                android:textColor="#558B2F" />
 
-        <!-- Mô tả món ăn -->
+            <TextView
+                android:id="@+id/text_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="👤 Posted By: admin"
+                android:textColor="#558B2F" />
+        </LinearLayout>
+
+        <!-- Description -->
         <TextView
             android:id="@+id/text_description_label"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mô tả"
+            android:text="📌 Description"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/text_user"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textSize="18sp"
+            android:layout_marginTop="12dp"
+            android:textColor="#33691E" />
 
         <TextView
             android:id="@+id/text_description"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Đây là món chè ba màu truyền thống, được làm từ các loại đậu và thạch, mang lại hương vị thanh mát và ngọt ngào."
+            android:text="This is a traditional three-color sweet soup..."
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintTop_toBottomOf="@id/text_description_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textColor="#424242" />
 
-        <!-- Tiêu đề: Nguyên liệu -->
+        <!-- Ingredients -->
         <TextView
             android:id="@+id/text_ingredient_label"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nguyên liệu"
+            android:text="🧂 Ingredients"
             android:textStyle="bold"
+            android:textSize="18sp"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/text_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textColor="#33691E" />
 
-        <!-- Danh sách nguyên liệu -->
         <LinearLayout
             android:id="@+id/ingredients_container"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/text_ingredient_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginTop="4dp" />
 
-        <!-- Tiêu đề: Hướng dẫn -->
+        <!-- Instructions -->
         <TextView
             android:id="@+id/text_instruction_label"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hướng dẫn nấu ăn"
+            android:text="👨‍🍳 Cooking Instructions"
             android:textStyle="bold"
+            android:textSize="18sp"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/ingredients_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textColor="#33691E" />
 
-        <!-- Nội dung hướng dẫn có thể cuộn -->
-
-        <ScrollView
-            android:id="@+id/instruction_scroll"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
+        <TextView
+            android:id="@+id/text_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Step 1: Clean the ingredients..."
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintTop_toBottomOf="@id/text_instruction_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <TextView
-                android:id="@+id/text_instruction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bước 1: Làm sạch nguyên liệu...\nBước 2: Ướp và nấu..."
-                android:padding="8dp" />
-        </ScrollView>
-
-        <Button
-            android:id="@+id/btn_go_back"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="20dp"
-            android:backgroundTint="#978E8E"
-            android:drawablePadding="8dp"
-            android:fontFamily="sans-serif"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:text="Go back"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/instruction_scroll"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Đánh giá và bình luận -->
-        <TextView
-            android:id="@+id/text_comment_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Comment And Rating"
-            android:textSize="20sp"
-            android:textColor="#FFFFFF"
-            android:background="#547CFF"
-            android:gravity="center"
             android:padding="12dp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/btn_go_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:background="#DCEDC8"
+            android:textColor="#424242"
+            android:textSize="15sp"
+            android:lineSpacingExtra="4dp"
+            android:overScrollMode="ifContentScrolls" />
 
+        <!-- Action Buttons -->
         <LinearLayout
-            android:id="@+id/comment_section"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#F7FFF0"
-            android:padding="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="#F7FFF0"
-            android:elevation="2dp"
-            android:clipToPadding="false"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/text_comment_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- Ảnh avatar -->
-            <LinearLayout
-                android:id="@+id/rating_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="8dp"
-                android:paddingHorizontal="16dp">
-
-                <ImageView
-                    android:id="@+id/rating_avatar_image"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:scaleType="centerCrop"
-                    android:background="@android:color/white"
-                    android:src="@drawable/chebamau"
-                    android:clipToOutline="true"
-                    android:outlineProvider="background" />
-
-
-                <RatingBar
-                    android:id="@+id/rating_bar"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="1"
-                    android:isIndicator="false"
-                    android:layout_marginStart="16dp" />
-
-            </LinearLayout>
-
-            <!-- Nhập bình luận -->
-            <EditText
-                android:id="@+id/rating_edit_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Please write your comment here........."
-                android:background="@drawable/rounded_edittext"
-                android:minHeight="80dp"
-                android:gravity="top|start"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Nút gửi đánh giá -->
-            <Button
-                android:id="@+id/rating_btn_submit_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Submit"
-                android:textStyle="bold"
-                android:backgroundTint="#D7FFAA"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp" />
-        </LinearLayout>
-
-        <!-- Average Rating + Filter Section Container -->
-        <LinearLayout
-            android:id="@+id/average_filter_container"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#F7FFF0"
-            android:padding="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/comment_section"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Average Rating Text -->
-        <TextView
-            android:id="@+id/rating_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4.5 out of 5"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
-
-        <!-- Rating Bar and Rating Count Row -->
-        <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:weightSum="2">
 
-            <RatingBar
-                android:id="@+id/rating_average"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btn_go_back"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:numStars="5"
-                android:rating="4.5"
-                android:stepSize="0.1"
-                android:isIndicator="true" />
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="⬅ Go Back"
+                android:backgroundTint="#A5D6A7"
+                android:textColor="#1B5E20" />
 
-            <TextView
-                android:id="@+id/text_rating_count"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="(2 Ratings)"
+                android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:layout_gravity="center_vertical" />
+                android:text="✏️ Edit"
+                android:backgroundTint="#66BB6A"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
-        <!-- Filter Buttons -->
-        <LinearLayout
-            android:id="@+id/filter_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:paddingHorizontal="8dp">
-
-            <Button
-                android:id="@+id/button_all"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="All"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:padding="4dp"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/button_border_yellow" />
-
-            <Button
-                android:id="@+id/button_5_star"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="5★"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:padding="4dp"
-                android:layout_marginHorizontal="2dp"
-                android:background="@drawable/button_border_yellow" />
-
-            <Button
-                android:id="@+id/button_4_star"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="4★"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:padding="4dp"
-                android:layout_marginHorizontal="2dp"
-                android:background="@drawable/button_border_yellow" />
-
-            <Button
-                android:id="@+id/button_3_star"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="3★"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:padding="4dp"
-                android:layout_marginHorizontal="2dp"
-                android:background="@drawable/button_border_yellow" />
-
-            <Button
-                android:id="@+id/button_2_star"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="2★"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:padding="4dp"
-                android:layout_marginHorizontal="2dp"
-                android:background="@drawable/button_border_yellow" />
-
-            <Button
-                android:id="@+id/button_1_star"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="1★"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
-                android:padding="4dp"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/button_border_yellow" />
-        </LinearLayout>
-        </LinearLayout>
-
-
-        <!-- Danh sách đánh giá (RecyclerView) -->
-
-        <TextView
-            android:id="@+id/text_list_comment_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Ratings List"
-            android:textSize="20sp"
-            android:textColor="#FFFFFF"
-            android:background="#547CFF"
-            android:gravity="center"
-            android:padding="12dp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/average_filter_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/text_list_comment_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-        <!-- Footer -->
-
-        <TextView
-            android:id="@+id/footer_rating"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#B9EC7F"
-            android:text="© 2025 Recipe App"
-            android:gravity="center"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/recycler_comments"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    </LinearLayout>
 </ScrollView>

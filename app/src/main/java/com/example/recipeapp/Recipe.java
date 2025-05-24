@@ -7,11 +7,13 @@ import java.util.ArrayList;
         private int recipeId;
         public String title;
         public String time;
+
         public String type;
         public String origin;
         public String date;         // Ngày tạo
         public String updatedAt;    // Thời gian cập nhật
-        public String user;
+        private int userId;
+
         private Integer isApproved; // Có thể null
         private String rejectReason;
         private Integer categoryId;
@@ -26,18 +28,17 @@ import java.util.ArrayList;
 
         private String description;
         // Constructor đầy đủ (bổ sung instructions và updatedAt)
-        public Recipe(int recipeId, String title, String time, String type, String origin,
-                      String date, String updatedAt, String user, String imagePath,
-                      Integer isApproved, String rejectReason, String instructions,
-                      String description, int countView) {
-            this.recipeId = recipeId;
+        public Recipe(int id, String title, String time, String type, String origin,
+                      String date, String updatedAt, int userId, String imagePath,
+                      Integer isApproved, String rejectReason, String instructions, String description, int countView) {
+            this.recipeId = id;
             this.title = title;
             this.time = time;
             this.type = type;
             this.origin = origin;
             this.date = date;
             this.updatedAt = updatedAt;
-            this.user = user;
+            this.userId = userId;
             this.imagePath = imagePath;
             this.userImage = userImage;
             this.isApproved = isApproved;
@@ -97,9 +98,6 @@ import java.util.ArrayList;
             return updatedAt;
         }
 
-        public String getUser() {
-            return user;
-        }
 
         public int getUserImage() {
             return userImage;
@@ -166,6 +164,31 @@ import java.util.ArrayList;
         public String setType(String type) {
             return type;
         }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public void setOrigin(String origin) {
+            this.origin = origin;
+        }
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public int getUserId() {
+            return userId;
+        }
+
+        public void setUserId(int userId) {
+            this.userId = userId;
+        }
+
+
+        public void setImagePath(String imagePath) {
+            this.imagePath = imagePath;
+        }
+
 
         public int getUserId() {
             if (user != null) {

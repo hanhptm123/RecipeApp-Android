@@ -1,5 +1,7 @@
 package com.example.recipeapp;
 
+
+import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -21,13 +23,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private ImageView imageRecipe;
     private TextView textTitle, textTime, textType, textOrigin, textDate, textUser, textInstruction, textDescription;
     private LinearLayout ingredientsContainer;
+    private Button btnGoBack, btnEdit;
+
+    private Recipe recipe;
+    private ArrayList<DetailRecipeIngredient> detailIngredients;
+    private int currentUserId;
     private Button btnGoBack, btnSubmitRating;
     private RatingBar ratingBar;
     private EditText editComment;
@@ -54,6 +60,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
 
+        // Map views
         db = new KET_NOI_CSDL(this);
 
         // Ánh xạ view
@@ -65,8 +72,22 @@ public class RecipeDetailActivity extends AppCompatActivity {
         textDate = findViewById(R.id.text_date);
         textUser = findViewById(R.id.text_user);
         textInstruction = findViewById(R.id.text_instruction);
-        ingredientsContainer = findViewById(R.id.ingredients_container);
         textDescription = findViewById(R.id.text_description);
+        ingredientsContainer = findViewById(R.id.ingredients_container);
+        btnGoBack = findViewById(R.id.btn_go_back);
+        btnEdit = findViewById(R.id.btnEdit);
+
+        // Get data from Intent
+        recipe = (Recipe) getIntent().getSerializableExtra("recipe");
+        detailIngredients = (ArrayList<DetailRecipeIngredient>) getIntent().getSerializableExtra("ingredients");
+        currentUserId = getIntent().getIntExtra("currentUserId", -1);
+
+        if (recipe != null) {
+            displayRecipeInfo(recipe);
+
+            // Set visibility of Edit button
+            btnEdit.setVisibility(recipe.getUserId() == currentUserId ? View.VISIBLE : View.GONE);
+
         btnSubmitRating = findViewById(R.id.rating_btn_submit_comment);
         btnGoBack = findViewById(R.id.btn_go_back);
         ratingBar = findViewById(R.id.rating_bar);
@@ -175,6 +196,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
     }
 
+        if (detailIngredients != null && !detailIngredients.isEmpty()) {
+            displayIngredients(detailIngredients);
+            recipe.setDetailIngredients(detailIngredients);
     private void filterComments(int star) {
         if (star == 0) {
             commentAdapter.updateData(allComments);
@@ -223,7 +247,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to submit comment. Please try again.", Toast.LENGTH_SHORT).show();
         }
     }
+        // Handle Edit button click
+        btnEdit.setOnClickListener(v -> {
+            Log.d("DEBUG_EDIT", "Edit button clicked");
+            if (recipe == null) {
+                Toast.makeText(this, "Recipe is null", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(RecipeDetailActivity.this, EditRecipeActivity.class);
+            intent.putExtra("RECIPE_TO_EDIT", recipe);
+            startActivityForResult(intent, 1001);
+        });
 
+        // Handle Go Back button
+        btnGoBack.setOnClickListener(v -> finish());
     private void updateRatingSummary() {
         int ratingCount = db.getRatingCountByRecipeId(currentRecipeId);
         double averageRating = calculateAverageRating(allComments);
@@ -246,5 +283,46 @@ public class RecipeDetailActivity extends AppCompatActivity {
             totalScore += rating.getRatingScore();
         }
         return (double) totalScore / comments.size();
+    }
+
+    private void displayRecipeInfo(Recipe recipe) {
+        textTitle.setText(recipe.getTitle());
+        textTime.setText("Time: " + recipe.getTime());
+        textType.setText("Type: " + recipe.getType());
+        textOrigin.setText("Origin: " + recipe.getOrigin());
+        textDate.setText("Posted on: " + recipe.getDate());
+        textUser.setText("Posted by: " + recipe.getUserId());
+        textDescription.setText(recipe.getDescription());
+        textInstruction.setText(recipe.getInstructions());
+
+        // Temporary placeholder image
+        imageRecipe.setImageResource(R.drawable.chebamau);
+    }
+
+    private void displayIngredients(ArrayList<DetailRecipeIngredient> ingredients) {
+        ingredientsContainer.removeAllViews();
+        for (DetailRecipeIngredient dri : ingredients) {
+            TextView tv = new TextView(this);
+            tv.setText("- " + dri.getIngredientName() + ": " + dri.getAmount());
+            tv.setTextSize(16);
+            ingredientsContainer.addView(tv);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Recipe updatedRecipe = (Recipe) data.getSerializableExtra("UPDATED_RECIPE");
+                if (updatedRecipe != null) {
+                    this.recipe = updatedRecipe;
+                    displayRecipeInfo(recipe);
+                    if (recipe.getDetailIngredients() != null) {
+                        displayIngredients(recipe.getDetailIngredients());
+                    }
+                }
+            }
+        }
     }
 }

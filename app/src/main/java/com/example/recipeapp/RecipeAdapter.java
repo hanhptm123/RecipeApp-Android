@@ -27,6 +27,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     private List<Recipe> recipeList;
     private Context context;
+
+    private int currentUserId;
     private KET_NOI_CSDL dbHelper;
     private int userId;
 
@@ -34,6 +36,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         this.recipeList = recipeList;
         this.context = context;
         this.dbHelper = dbHelper;
+        this.currentUserId = currentUserId;
+    }
 
         // Lấy UserID từ SharedPreferences
         SharedPreferences sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
@@ -55,7 +59,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.tvType.setText("Category: " + recipe.getType());
         holder.tvOrigin.setText("Origin: " + recipe.getOrigin());
         holder.tvDate.setText("Posted On: " + recipe.getDate());
-        holder.tvUser.setText(recipe.getUser());
+        holder.tvUser.setText(String.valueOf(recipe.getUserId()));
 
         // Load ảnh món ăn
         String imagePath = recipe.getImagePath();
@@ -124,8 +128,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 }
 
                 Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
-                intent.putExtra("recipe", selectedRecipe);
+
+                intent.putExtra("recipe", selectedRecipe); 
                 intent.putExtra("ingredients", selectedIngredients);
+                intent.putExtra("currentUserId", currentUserId);
                 view.getContext().startActivity(intent);
             }
         });

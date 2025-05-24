@@ -43,6 +43,16 @@ public class AddRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
+        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        final int userId = sharedPref.getInt("UserID", -1); // ✅ dùng final để dùng trong lambda
+
+
+        if (userId == -1) {
+            Toast.makeText(this, "Không xác định được người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         layoutIngredients = findViewById(R.id.layoutIngredients);
         btnAddIngredient = findViewById(R.id.btnAddIngredient);
 
@@ -99,7 +109,6 @@ public class AddRecipeActivity extends AppCompatActivity {
 
             int cookTime = Integer.parseInt(time);
             String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            String user = getLoggedInUserName();
             String imagePath = selectedImageUri != null ? selectedImageUri.toString() : "";
             String instructions = editInstructions.getText().toString().trim();
             String updatedAt = currentDate;
@@ -114,7 +123,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                     origin,
                     currentDate,
                     updatedAt,
-                    user,
+                    userId,
                     imagePath,
                     null,
                     null,
