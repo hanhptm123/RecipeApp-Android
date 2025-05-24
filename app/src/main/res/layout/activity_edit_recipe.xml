@@ -3,8 +3,8 @@
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E8F5E9"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F1F8E9"> <!-- Light green background -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,13 +13,13 @@
 
         <!-- Title -->
         <TextView
-            android:text="ADD A RECIPE"
-            android:textSize="20sp"
+            android:text="EDIT RECIPE"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:layout_gravity="center"
-            android:textColor="#1B5E20"
-            android:paddingBottom="12dp"
-            android:layout_width="match_parent"
+            android:layout_marginBottom="16dp"
+            android:textColor="#2E7D32"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <!-- Recipe title -->
@@ -28,36 +28,37 @@
             android:hint="Recipe Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="#A5D6A7" />
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Description -->
         <EditText
             android:id="@+id/editDescription"
-            android:hint="Recipe Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:hint="Short description..."
             android:minLines="3"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:backgroundTint="#A5D6A7"
-            android:layout_marginBottom="8dp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Category -->
         <Spinner
             android:id="@+id/spinnerCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="12dp" />
 
-        <!-- Image & Cook Time -->
+        <!-- Image & Time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
-            android:paddingTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <Button
                 android:id="@+id/btnChooseFile"
@@ -65,18 +66,19 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#66BB6A"
-                android:textColor="#FFFFFF" />
+                android:backgroundTint="#81C784"
+                android:textColor="#1B5E20"
+                android:layout_marginEnd="8dp" />
 
             <EditText
                 android:id="@+id/editTime"
-                android:hint="Cook Time (min)"
+                android:hint="Minutes"
                 android:inputType="number"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="#A5D6A7" />
+                android:background="@drawable/edittext_background"
+                android:padding="12dp" />
         </LinearLayout>
 
         <!-- Origin -->
@@ -84,89 +86,63 @@
             android:id="@+id/spinnerOrigin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="16dp" />
 
-        <!-- Ingredients -->
+        <!-- Ingredients section -->
         <TextView
-            android:text="Ingredients"
+            android:text="🧂 Ingredients"
             android:textStyle="bold"
-            android:textColor="#2E7D32"
+            android:textSize="16sp"
+            android:textColor="#33691E"
             android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:id="@+id/layoutIngredients"
+        <!-- Scrollable ingredient list -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_height="150dp"
+            android:layout_marginBottom="12dp"
+            android:background="#DCEDC8">
 
-            <!-- Default ingredient row -->
             <LinearLayout
+                android:id="@+id/layoutIngredients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3"
-                android:layout_marginBottom="8dp">
-
-                <EditText
-                    android:id="@+id/editIngredientName"
-                    android:hint="Ingredient Name"
-                    android:layout_weight="1.5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#A5D6A7" />
-
-                <EditText
-                    android:id="@+id/editIngredientAmount"
-                    android:hint="Amount"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:backgroundTint="#A5D6A7" />
-
-                <Button
-                    android:id="@+id/btnDeleteIngredient"
-                    android:text="×"
-                    android:layout_weight="0.5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="#C62828" />
-            </LinearLayout>
-        </LinearLayout>
+                android:orientation="vertical"
+                android:padding="8dp" />
+        </ScrollView>
 
         <Button
             android:id="@+id/btnAddIngredient"
-            android:text="Add Ingredient"
+            android:text="➕ Add Ingredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#388E3C"
+            android:backgroundTint="#66BB6A"
             android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="16dp" />
 
         <!-- Instructions -->
         <TextView
-            android:text="Instructions"
+            android:text="👨‍🍳 Instructions"
             android:textStyle="bold"
-            android:textColor="#2E7D32"
+            android:textSize="16sp"
+            android:textColor="#33691E"
             android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/editInstructions"
-            android:hint="Write the cooking instructions..."
-            android:minLines="4"
+            android:hint="Cooking steps..."
+            android:minLines="5"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:backgroundTint="#A5D6A7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_marginBottom="20dp" />
 
         <!-- Action buttons -->
         <LinearLayout
@@ -178,21 +154,21 @@
 
             <Button
                 android:id="@+id/btnBack"
-                android:text="Back to List"
+                android:text="⬅Go Back"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#757575"
-                android:textColor="#FFFFFF" />
+                android:backgroundTint="#A5D6A7"
+                android:textColor="#1B5E20" />
 
             <Button
                 android:id="@+id/btnSave"
-                android:text="Save Recipe"
+                android:text="💾 Update"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="#388E3C"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 

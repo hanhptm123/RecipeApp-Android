@@ -16,7 +16,7 @@ import java.util.List;
 
 public class KET_NOI_CSDL extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipeDB.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     public KET_NOI_CSDL(@Nullable Context context, String s, Object o, int i) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -30,6 +30,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS Categories (" +
                 "CategoryID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "CategoryName TEXT)");
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Ingredients (" +
                 "IngredientID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -57,7 +58,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "type TEXT, " +
                 "origin TEXT, " +
                 "date TEXT, " +
-                "user TEXT, " +
+                "userId TEXT, " +
                 "imagePath TEXT," +
                 "isApproved INTEGER," +
                 "updatedAt TEXT," +
@@ -117,12 +118,12 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Favourites");
         db.execSQL("DROP TABLE IF EXISTS Ratings");
         db.execSQL("DROP TABLE IF EXISTS DetailRecipeIngredient");
+        db.execSQL("DROP TABLE IF EXISTS RecipeTable");
         db.execSQL("DROP TABLE IF EXISTS Recipes");
         db.execSQL("DROP TABLE IF EXISTS Origins");
         db.execSQL("DROP TABLE IF EXISTS Ingredients");
         db.execSQL("DROP TABLE IF EXISTS Categories");
         db.execSQL("DROP TABLE IF EXISTS Users");
-        db.execSQL("DROP TABLE IF EXISTS RecipeTable");
         onCreate(db);
     }
 
@@ -150,7 +151,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
                 String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                String user = cursor.getString(cursor.getColumnIndexOrThrow("user"));
+                int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId")); // ✅ fix tại đây
                 String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
                 String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
                 String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
@@ -160,7 +161,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
 
 
-                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, user, imagePath, isApproved, rejectReason, instructions,description);
+                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, userId, imagePath, isApproved, rejectReason, instructions,description);
 
                 recipe.userImage = userImage;
                 list.add(recipe);
@@ -186,7 +187,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
                 String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-                String user = cursor.getString(cursor.getColumnIndexOrThrow("user"));
+                int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
                 String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
                 String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
                 String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
@@ -195,7 +196,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
 
-                Recipe recipe = new Recipe(1,title, time, type, origin, date, updatedAt, user, imagePath, isApproved, rejectReason, instructions, description);
+                Recipe recipe = new Recipe(1,title, time, type, origin, date, updatedAt, userId, imagePath, isApproved, rejectReason, instructions, description);
                 recipe.setRecipeId(cursor.getInt(cursor.getColumnIndex("id")));
                 list.add(recipe);
             } while (cursor.moveToNext());
@@ -241,7 +242,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             values.put("type", recipe.getType());
             values.put("origin", recipe.getOrigin());
             values.put("date", recipe.getDate());
-            values.put("user", recipe.getUser());
+            values.put("userId", recipe.getUserId());
             values.put("imagePath", recipe.getImagePath());
             values.put("userImage", recipe.getUserImage());
             values.put("isApproved", recipe.getIsApproved());
@@ -414,6 +415,159 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         cursor.close();
         return recipes;
     }
+    public boolean updateRecipeAndIngredients(Recipe recipe, ArrayList<DetailRecipeIngredient> newIngredients) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put("title", recipe.getTitle());
+            values.put("Description", recipe.getDescription());
+            values.put("Time", recipe.getTime());
+            values.put("Instructions", recipe.getInstructions());
+            values.put("UpdatedAt", System.currentTimeMillis());
+
+            // Cập nhật công thức
+            db.update("RecipeTable", values, "id = ?", new String[]{String.valueOf(recipe.getRecipeId())});
+
+            // Xóa toàn bộ nguyên liệu cũ
+            db.delete("DetailRecipeIngredient", "RecipeID = ?", new String[]{String.valueOf(recipe.getRecipeId())});
+
+// Thêm lại danh sách nguyên liệu mới
+            for (DetailRecipeIngredient dri : newIngredients) {
+                ContentValues ingredientValues = new ContentValues();
+                ingredientValues.put("RecipeID", recipe.getRecipeId());
+                ingredientValues.put("IngredientID", dri.getIngredientId());
+                ingredientValues.put("Amount", dri.getAmount());
+                db.insert("DetailRecipeIngredient", null, ingredientValues);
+            }
+
+            db.setTransactionSuccessful(); // commit
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+        // Lấy danh sách tất cả tên loại món ăn (Category)
+    public List<String> getAllCategoryNames() {
+        List<String> names = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT CategoryName  FROM Categories", null);
+        if (cursor.moveToFirst()) {
+            do {
+                names.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return names;
+    }
+
+    // Lấy danh sách tất cả tên nguồn gốc (Origin)
+    public List<String> getAllOriginNames() {
+        List<String> names = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT OriginName FROM Origins", null);
+        if (cursor.moveToFirst()) {
+            do {
+                names.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return names;
+    }
+
+    // Lấy ID của loại món ăn từ tên
+    public int getCategoryIdByName(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT CategoryID FROM Categories WHERE CategoryName = ?", new String[]{name});
+        int id = -1;
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return id;
+    }
+
+
+    // Lấy tên loại món ăn từ ID
+    public String getCategoryNameById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT CategoryName  FROM Categories WHERE CategoryID = ?", new String[]{String.valueOf(id)});
+        String name = null;
+        if (cursor.moveToFirst()) {
+            name = cursor.getString(0);
+        }
+        cursor.close();
+        db.close();
+        return name;
+    }
+    public int getIngredientIdByName(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT IngredientID FROM Ingredients WHERE IngredientName = ?", new String[]{name});
+        int id = -1;
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);
+        }
+        return id;
+    }
+
+
+    public int insertIngredientIfNotExists(String ingredientName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int existingId = getIngredientIdByName(ingredientName);
+        if (existingId != -1) {
+            return existingId;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("IngredientName", ingredientName);
+        long newId = db.insert("Ingredients", null, values);
+
+        return (int) newId;
+    }
+    public ArrayList<Recipe> getRecipesByUserId(int userId) {
+        ArrayList<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM RecipeTable WHERE userId = ?",
+                new String[]{String.valueOf(userId)}
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                // Đọc các cột Recipe từ cursor
+                int recipeId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
+                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
+                int isApproved = cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
+                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
+                String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+
+                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, userId, imagePath, isApproved, rejectReason, instructions, description);
+
+                list.add(recipe);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return list;
+    }
+
+
 
 
 }

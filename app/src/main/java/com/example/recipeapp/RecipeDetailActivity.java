@@ -1,5 +1,6 @@
 package com.example.recipeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,32 +8,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private ImageView imageRecipe;
     private TextView textTitle, textTime, textType, textOrigin, textDate, textUser, textInstruction, textDescription;
     private LinearLayout ingredientsContainer;
-    private Button btnGoBack;
+    private Button btnGoBack, btnEdit;
+
+    private Recipe recipe;
+    private ArrayList<DetailRecipeIngredient> detailIngredients;
+    private int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
 
-        KET_NOI_CSDL db = new KET_NOI_CSDL(this);
-        List<DetailRecipeIngredient> details = db.layDanhSachNguyenLieu(1);
-        for (DetailRecipeIngredient detail : details) {
-            Log.d("INGREDIENT_LOG", detail.getIngredientName() + " - " + detail.getAmount());
-        }
-
-
-        // Ánh xạ view
+        // Map views
         imageRecipe = findViewById(R.id.image_recipe);
         textTitle = findViewById(R.id.text_title);
         textTime = findViewById(R.id.text_time);
@@ -41,43 +39,82 @@ public class RecipeDetailActivity extends AppCompatActivity {
         textDate = findViewById(R.id.text_date);
         textUser = findViewById(R.id.text_user);
         textInstruction = findViewById(R.id.text_instruction);
-        ingredientsContainer = findViewById(R.id.ingredients_container);
         textDescription = findViewById(R.id.text_description);
-
+        ingredientsContainer = findViewById(R.id.ingredients_container);
         btnGoBack = findViewById(R.id.btn_go_back);
+        btnEdit = findViewById(R.id.btnEdit);
 
-        // Lấy dữ liệu từ Intent (giả sử bạn truyền đối tượng Recipe qua Intent)
-        Recipe recipe = (Recipe) getIntent().getSerializableExtra("recipe");
-        ArrayList<DetailRecipeIngredient> detailIngredients =
-                (ArrayList<DetailRecipeIngredient>) getIntent().getSerializableExtra("ingredients");
+        // Get data from Intent
+        recipe = (Recipe) getIntent().getSerializableExtra("recipe");
+        detailIngredients = (ArrayList<DetailRecipeIngredient>) getIntent().getSerializableExtra("ingredients");
+        currentUserId = getIntent().getIntExtra("currentUserId", -1);
 
         if (recipe != null) {
-            // Hiển thị dữ liệu công thức
-            textTitle.setText(recipe.getTitle());
-            textTime.setText("Thời gian: " + recipe.getTime());
-            textType.setText("Loại: " + recipe.getType());
-            textOrigin.setText("Xuất xứ: " + recipe.getOrigin());
-            textDate.setText("Ngày đăng: " + recipe.getDate());
-            textUser.setText("Người đăng: " + recipe.getUser());
-            textDescription.setText(recipe.getDescription());
-            textInstruction.setText(recipe.getInstructions());
+            displayRecipeInfo(recipe);
 
-            // Nếu có ảnh từ path thì load (tạm dùng ảnh mặc định)
-            imageRecipe.setImageResource(R.drawable.chebamau);
+            // Set visibility of Edit button
+            btnEdit.setVisibility(recipe.getUserId() == currentUserId ? View.VISIBLE : View.GONE);
         }
 
-        // Hiển thị danh sách nguyên liệu
         if (detailIngredients != null && !detailIngredients.isEmpty()) {
-            for (DetailRecipeIngredient dri : detailIngredients) {
-                TextView tv = new TextView(this);
-                String ingredientLine = "- " + dri.getIngredientName() + ": " + dri.getAmount();
-                tv.setText(ingredientLine);
-                tv.setTextSize(16);
-                ingredientsContainer.addView(tv);
+            displayIngredients(detailIngredients);
+            recipe.setDetailIngredients(detailIngredients);
+        }
+
+        // Handle Edit button click
+        btnEdit.setOnClickListener(v -> {
+            Log.d("DEBUG_EDIT", "Edit button clicked");
+            if (recipe == null) {
+                Toast.makeText(this, "Recipe is null", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(RecipeDetailActivity.this, EditRecipeActivity.class);
+            intent.putExtra("RECIPE_TO_EDIT", recipe);
+            startActivityForResult(intent, 1001);
+        });
+
+        // Handle Go Back button
+        btnGoBack.setOnClickListener(v -> finish());
+    }
+
+    private void displayRecipeInfo(Recipe recipe) {
+        textTitle.setText(recipe.getTitle());
+        textTime.setText("Time: " + recipe.getTime());
+        textType.setText("Type: " + recipe.getType());
+        textOrigin.setText("Origin: " + recipe.getOrigin());
+        textDate.setText("Posted on: " + recipe.getDate());
+        textUser.setText("Posted by: " + recipe.getUserId());
+        textDescription.setText(recipe.getDescription());
+        textInstruction.setText(recipe.getInstructions());
+
+        // Temporary placeholder image
+        imageRecipe.setImageResource(R.drawable.chebamau);
+    }
+
+    private void displayIngredients(ArrayList<DetailRecipeIngredient> ingredients) {
+        ingredientsContainer.removeAllViews();
+        for (DetailRecipeIngredient dri : ingredients) {
+            TextView tv = new TextView(this);
+            tv.setText("- " + dri.getIngredientName() + ": " + dri.getAmount());
+            tv.setTextSize(16);
+            ingredientsContainer.addView(tv);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Recipe updatedRecipe = (Recipe) data.getSerializableExtra("UPDATED_RECIPE");
+                if (updatedRecipe != null) {
+                    this.recipe = updatedRecipe;
+                    displayRecipeInfo(recipe);
+                    if (recipe.getDetailIngredients() != null) {
+                        displayIngredients(recipe.getDetailIngredients());
+                    }
+                }
             }
         }
-
-        // Xử lý nút quay lại
-        btnGoBack.setOnClickListener(v -> finish());
     }
 }
