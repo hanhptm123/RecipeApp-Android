@@ -1,0 +1,22 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Background trong suốt -->
+    <solid android:color="@android:color/transparent" />
+
+    <!-- Viền đen 1dp, vuông góc (bỏ radius hoặc radius = 0) -->
+    <stroke
+        android:width="1dp"
+        android:color="#000000" />
+
+    <!-- Viền góc vuông, bỏ radius hoặc để 0 -->
+    <corners android:radius="5dp" />
+
+    <padding
+        android:left="6dp"
+        android:top="6dp"
+        android:right="6dp"
+        android:bottom="6dp" />
+
+    <size android:width="40dp" android:height="40dp" />
+</shape>
