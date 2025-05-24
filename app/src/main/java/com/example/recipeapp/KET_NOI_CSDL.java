@@ -16,7 +16,7 @@ import java.util.List;
 
 public class KET_NOI_CSDL extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipeDB.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     public KET_NOI_CSDL(@Nullable Context context, String s, Object o, int i) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -82,7 +82,9 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "Comment TEXT, " +
                 "CreatedAt TEXT, " +
                 "RecipeID INTEGER, " +
-                "FOREIGN KEY(RecipeID) REFERENCES Recipes(RecipeID))");
+                "UserID INTEGER, " +
+                "FOREIGN KEY(RecipeID) REFERENCES Recipes(RecipeID), " +
+                "FOREIGN KEY(UserID) REFERENCES Users(UserID))");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Favourites (" +
                 "FavouriteID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -414,6 +416,110 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         cursor.close();
         return recipes;
     }
+    public long insertRating(int recipeId, int userId, int ratingScore, String comment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("RecipeID", recipeId);
+        values.put("UserID", userId);
+        values.put("RatingScore", ratingScore);
+        values.put("Comment", comment);
+        values.put("CreatedAt", System.currentTimeMillis());
+        return db.insert("Ratings", null, values);
+    }
 
+    public boolean hasUserRated(int recipeId, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        boolean hasRated = false;
+
+        try {
+            String query = "SELECT 1 FROM Ratings WHERE RecipeID = ? AND UserID = ? LIMIT 1";
+            cursor = db.rawQuery(query, new String[]{String.valueOf(recipeId), String.valueOf(userId)});
+            hasRated = (cursor != null && cursor.moveToFirst());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return hasRated;
+    }
+
+    public boolean hasUserCommented(int recipeId, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT 1 FROM Ratings WHERE RecipeID = ? AND UserID = ? AND Comment IS NOT NULL LIMIT 1",
+                new String[]{String.valueOf(recipeId), String.valueOf(userId)});
+        boolean hasCommented = cursor.moveToFirst();
+        cursor.close();
+        return hasCommented;
+    }
+    public List<Rating> getCommentsByRecipeId(int recipeId) {
+        List<Rating> ratings = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Thêm u.UserID vào SELECT để lấy được userId
+        Cursor cursor = db.rawQuery(
+                "SELECT u.UserID, u.UserName, r.RatingScore, r.CreatedAt, r.Comment " +
+                        "FROM Ratings r JOIN Users u ON r.UserID = u.UserID " +
+                        "WHERE r.RecipeID = ?",
+                new String[]{String.valueOf(recipeId)}
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int userId = cursor.getInt(cursor.getColumnIndexOrThrow("UserID"));
+                String userName = cursor.getString(cursor.getColumnIndexOrThrow("UserName"));
+                int score = cursor.getInt(cursor.getColumnIndexOrThrow("RatingScore"));
+                String createdAt = cursor.getString(cursor.getColumnIndexOrThrow("CreatedAt"));
+                String comment = cursor.getString(cursor.getColumnIndexOrThrow("Comment"));
+
+
+                Rating rating = new Rating(userId, userName, score, createdAt, comment);
+                ratings.add(rating);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return ratings;
+    }
+
+
+
+    // Trả về số lượng rating của recipe theo recipeId
+    public int getRatingCountByRecipeId(int recipeId) {
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM Ratings WHERE RecipeID = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(recipeId)});
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public float getAverageRatingByRecipeId(int recipeId) {
+        float average = 0;
+        Cursor cursor = null;
+        try {
+            cursor = Doc_bang("SELECT AVG(RatingScore) AS AvgRating FROM Ratings WHERE RecipeID = " + recipeId);
+            if (cursor != null && cursor.moveToFirst()) {
+                int colIndex = cursor.getColumnIndex("AvgRating");
+                if (colIndex != -1) {
+                    average = cursor.getFloat(colIndex);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return average;
+    }
 
 }
