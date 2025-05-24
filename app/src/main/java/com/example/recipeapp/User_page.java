@@ -117,7 +117,7 @@ public class User_page extends AppCompatActivity {
                     startActivity(new Intent(User_page.this, SearchByCategoryActivity.class));
                     return true;
                 } else if (id == R.id.menu_search_by_ingredient) {
-                    startActivity(new Intent(User_page.this, SearchByIngredientActivity.class));
+                    startActivity(new Intent(User_page.this, searchRecipesByIngredient.class));
                     return true;
                 }
                 return false;

@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, SearchByCategoryActivity.class));
                     return true;
                 } else if (id == R.id.menu_search_by_ingredient) {
-                    startActivity(new Intent(MainActivity.this, SearchByIngredientActivity.class));
+                    startActivity(new Intent(MainActivity.this, searchRecipesByIngredient.class));
                     return true;
                 }
                 return false;

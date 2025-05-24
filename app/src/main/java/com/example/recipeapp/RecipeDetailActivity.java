@@ -40,6 +40,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private List<Rating> allComments = new ArrayList<>();
     private CommentAdapter commentAdapter;
+    private TextView textCountView; // Thêm biến TextView cho lượt xem
+
 
     private KET_NOI_CSDL db;
     private int currentRecipeId = -1;
@@ -69,6 +71,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         btnGoBack = findViewById(R.id.btn_go_back);
         ratingBar = findViewById(R.id.rating_bar);
         editComment = findViewById(R.id.rating_edit_comment);
+        textCountView = findViewById(R.id.text_count_view); // Ánh xạ lượt xem
+
 
         textRatingCount = findViewById(R.id.text_rating_count);
         ratingAverage = findViewById(R.id.rating_average);
@@ -122,6 +126,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             textDescription.setText(recipe.getDescription());
             textInstruction.setText(recipe.getInstructions());
             imageRecipe.setImageResource(R.drawable.chebamau);
+            textCountView.setText("Lượt xem: " + recipe.getCountView());
 
             // Hiển thị danh sách nguyên liệu
             if (detailIngredients != null && !detailIngredients.isEmpty()) {
