@@ -586,4 +586,31 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         db.execSQL("UPDATE RecipeTable SET countView = countView + 1 WHERE id = ?", new Object[]{recipeId});
         db.close();
     }
+    public List<Recipe> getTopRecipes(int month, int year) {
+        List<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String monthStr = String.format("%02d", month);
+        String yearStr = String.valueOf(year);
+
+        String sql = "SELECT id, title, countView, updatedAt FROM RecipeTable " +
+                "WHERE strftime('%m', updatedAt) = ? AND strftime('%Y', updatedAt) = ? " +
+                "ORDER BY countView DESC LIMIT 20";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{monthStr, yearStr});
+        if (cursor.moveToFirst()) {
+            do {
+                Recipe recipe = new Recipe();
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                recipe.setCountView(cursor.getInt(cursor.getColumnIndexOrThrow("countView")));
+                recipe.setUpdatedAt(cursor.getString(cursor.getColumnIndexOrThrow("updatedAt")));
+                list.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+
 }

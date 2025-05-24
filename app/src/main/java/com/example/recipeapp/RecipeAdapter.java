@@ -124,4 +124,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             ratingBar = itemView.findViewById(R.id.ratingBar); // Thêm dòng này
         }
     }
+    // Thêm method này để cập nhật data mới khi filter
+    public void updateData(List<Recipe> newRecipeList) {
+        this.recipeList = newRecipeList;
+        notifyDataSetChanged();
+    }
+
 }

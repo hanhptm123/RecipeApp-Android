@@ -162,8 +162,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
             updateRatingSummary();
 
             // Nút quay lại
-            btnGoBack.setOnClickListener(v -> finish());
-
+            btnGoBack.setOnClickListener(v -> {
+                finish();
+            });
             // Filter buttons sự kiện
             findViewById(R.id.button_all).setOnClickListener(v -> filterComments(0));
             findViewById(R.id.button_5_star).setOnClickListener(v -> filterComments(5));
