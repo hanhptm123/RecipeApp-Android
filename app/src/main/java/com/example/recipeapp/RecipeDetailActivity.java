@@ -61,7 +61,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
             textCountView.setText("Lượt xem: " + recipe.getCountView());
 
             // Hiển thị hoặc ẩn nút Edit
+
             btnEdit.setVisibility(recipe.getUserId() == currentUserId ? View.VISIBLE : View.GONE);
+            Log.d("RECIPE_USER", "recipe.getUserId(): " + recipe.getUserId());
+            Log.d("CURRENT_USER", "currentUserId: " + currentUserId);
+
 
             // Xử lý rating/comment
             boolean isOwner = (currentUserId == recipe.getUserId());
@@ -77,10 +81,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // Gán sự kiện nút
             btnGoBack.setOnClickListener(v -> finish());
             btnEdit.setOnClickListener(v -> {
+                // Gán danh sách nguyên liệu cho recipe trước khi gửi
+                recipe.setDetailIngredients(detailIngredients);
+
                 Intent intent = new Intent(this, EditRecipeActivity.class);
                 intent.putExtra("RECIPE_TO_EDIT", recipe);
                 startActivityForResult(intent, 1001);
             });
+
 
             setupFilterButtons();
         }
