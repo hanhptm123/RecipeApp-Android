@@ -135,8 +135,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="KiKie"
+                    android:layout_marginBottom="30dp"
                     android:textSize="14sp"
                     android:textColor="#333333" />
+                <TextView
+                    android:id="@+id/tvRejectReason"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FF0000"
+                    android:textStyle="italic"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"/>
+
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
