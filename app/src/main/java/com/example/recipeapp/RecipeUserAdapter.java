@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +46,11 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
         this.recipeList = recipeList;
         this.context = context;
         this.dbHelper = dbHelper;
-        this.currentUserId = currentUserId;
         SharedPreferences sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        this.userId = sharedPref.getInt("UserID", -1); // -1 nếu không có
+        this.currentUserId = sharedPref.getInt("UserID", -1);
+        this.userId = this.currentUserId;
     }
+
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -71,25 +75,15 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
         // Load ảnh món ăn
         String imagePath = recipe.getImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
-            try {
-                Uri uri = Uri.parse(imagePath);
-                InputStream inputStream = context.getContentResolver().openInputStream(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                if (bitmap != null) {
-                    holder.imgRecipe.setImageBitmap(bitmap);
-                } else {
-                    holder.imgRecipe.setImageResource(R.drawable.pho);
-                }
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                holder.imgRecipe.setImageResource(R.drawable.pho);
-            }
+            Glide.with(context)
+                    .load(imagePath)
+                    .placeholder(R.drawable.pho)
+                    .error(R.drawable.pho)
+                    .into(holder.imgRecipe);
         } else {
             holder.imgRecipe.setImageResource(R.drawable.pho);
         }
+
 
         holder.imgUser.setImageResource(recipe.getUserImage());
 

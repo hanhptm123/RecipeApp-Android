@@ -50,33 +50,50 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp" />
 
-        <!-- Image & Cook Time -->
+        <!-- Image Selection and Display -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:paddingTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:orientation="vertical"
+            android:layout_marginBottom="12dp">
 
-            <Button
-                android:id="@+id/btnChooseFile"
-                android:text="Choose Image"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+            <!-- Button chọn ảnh và thời gian -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#66BB6A"
-                android:textColor="#FFFFFF" />
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:gravity="center_vertical">
 
-            <EditText
-                android:id="@+id/editTime"
-                android:hint="Cook Time (min)"
-                android:inputType="number"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="#A5D6A7" />
+                <Button
+                    android:id="@+id/btnChooseFile"
+                    android:text="Choose Image"
+                    android:layout_weight="1.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#66BB6A"
+                    android:textColor="#FFFFFF" />
+
+                <EditText
+                    android:id="@+id/editTime"
+                    android:hint="Cook Time (min)"
+                    android:inputType="number"
+                    android:layout_weight="1.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="#A5D6A7" />
+            </LinearLayout>
+
+            <!-- Image hiển thị -->
+            <ImageView
+                android:id="@+id/imageViewRecipe"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginTop="12dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/pho"
+                android:contentDescription="Recipe Image" />
         </LinearLayout>
 
         <!-- Origin -->

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -18,16 +19,26 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 
+
 public class AddRecipeActivity extends AppCompatActivity {
+    private String savedImagePath = "";
 
     private EditText editTitle, editTime,editInstructions,editDescription, editIngredientName, editIngredientAmount;
     private Spinner spinnerType, spinnerOrigin;
     private Button btnSave;
+    private ImageView imageView;
+
     private KET_NOI_CSDL dbHelper;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri selectedImageUri;
@@ -55,6 +66,7 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         layoutIngredients = findViewById(R.id.layoutIngredients);
         btnAddIngredient = findViewById(R.id.btnAddIngredient);
+        imageView = findViewById(R.id.imageViewRecipe);
 
         btnAddIngredient.setOnClickListener(v -> addIngredientRow());
 
@@ -109,10 +121,11 @@ public class AddRecipeActivity extends AppCompatActivity {
 
             int cookTime = Integer.parseInt(time);
             String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            String imagePath = selectedImageUri != null ? selectedImageUri.toString() : "";
+            String imagePath = savedImagePath;
             String instructions = editInstructions.getText().toString().trim();
             String updatedAt = currentDate;
             String description = editDescription.getText().toString().trim();
+            Glide.with(this).load(new File(savedImagePath)).into(imageView);
 
 
             Recipe recipe = new Recipe(
@@ -175,10 +188,21 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            Toast.makeText(this, "Đã chọn ảnh!", Toast.LENGTH_SHORT).show();
+
+            // 🟢 Lưu ảnh và cập nhật lại selectedImageUri
+            String savedPath = saveImageToInternalStorage(selectedImageUri);
+            if (savedPath != null) {
+                savedImagePath = savedPath;
+                selectedImageUri = Uri.fromFile(new File(savedPath)); // dùng URI mới
+                Toast.makeText(this, "Ảnh đã lưu thành công!", Toast.LENGTH_SHORT).show();
+                Glide.with(this).load(selectedImageUri).into(imageView);
+
+            } else {
+                Toast.makeText(this, "Không thể lưu ảnh!", Toast.LENGTH_SHORT).show();
+
+            }
         }
     }
-
 
     private void setupSpinners() {
         String[] types = {"Món chính", "Tráng miệng", "Đồ uống"};
@@ -242,6 +266,41 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         layoutIngredients.addView(row);
     }
+
+    private String saveImageToInternalStorage(Uri imageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+
+            // Tạo tên file duy nhất
+            String fileName = "recipe_" + System.currentTimeMillis() + ".jpg";
+
+            // Tạo thư mục riêng trong bộ nhớ app
+            File directory = new File(getFilesDir(), "recipe_images");
+            if (!directory.exists()) {
+                directory.mkdirs(); // tạo thư mục nếu chưa có
+            }
+
+            // Tạo file mới
+            File file = new File(directory, fileName);
+
+            OutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+            return file.getAbsolutePath(); // ✅ đường dẫn thật dùng để lưu vào CSDL
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     private boolean isPositiveNumber(String str) {
         try {

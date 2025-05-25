@@ -171,8 +171,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
         textUser.setText("Posted by: " + recipe.getUserId());
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
-        imageRecipe.setImageResource(R.drawable.chebamau); // Placeholder image
+
+        String imagePath = recipe.getImagePath();  // Lấy đường dẫn ảnh
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Glide.with(this)
+                    .load(imagePath)
+                    .placeholder(R.drawable.chebamau)
+                    .error(R.drawable.chebamau)
+                    .into(imageRecipe);
+        } else {
+            imageRecipe.setImageResource(R.drawable.chebamau); // Ảnh mặc định
+        }
     }
+
 
     private void displayIngredients(List<DetailRecipeIngredient> ingredients) {
         ingredientsContainer.removeAllViews();
@@ -258,10 +270,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Recipe updatedRecipe = (Recipe) data.getSerializableExtra("UPDATED_RECIPE");
             if (updatedRecipe != null) {
                 this.recipe = updatedRecipe;
-                displayRecipeInfo(recipe);
+
+                // Cập nhật lại chi tiết nguyên liệu nếu có
                 if (recipe.getDetailIngredients() != null) {
                     displayIngredients(recipe.getDetailIngredients());
                 }
+
+                // Hiển thị lại thông tin (ảnh cũng được cập nhật)
+                displayRecipeInfo(recipe);
             }
         }
     }
