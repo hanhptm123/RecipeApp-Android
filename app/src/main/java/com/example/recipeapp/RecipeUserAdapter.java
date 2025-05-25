@@ -62,7 +62,12 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
         holder.tvOrigin.setText("Origin: " + recipe.getOrigin());
         holder.tvDate.setText("Posted On: " + recipe.getDate());
         holder.tvUser.setText(String.valueOf(recipe.getUserId()));
-
+        if (recipe.getIsApproved() != null && recipe.getIsApproved() == 0) {
+            holder.tvRejectReason.setVisibility(View.VISIBLE);
+            holder.tvRejectReason.setText("Reason reject: " + recipe.getRejectReason()); // giả sử bạn có field lý do
+        } else {
+            holder.tvRejectReason.setVisibility(View.GONE);
+        }
         // Load ảnh món ăn
         String imagePath = recipe.getImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
@@ -145,7 +150,7 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvTime, tvType, tvOrigin, tvDate, tvUser;
+        TextView tvTitle, tvTime, tvType, tvOrigin, tvDate, tvUser, tvRejectReason;
         ImageView imgRecipe, imgUser, btnFavorite;
         RatingBar ratingBar;
 
@@ -160,6 +165,7 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
             imgRecipe = itemView.findViewById(R.id.imgRecipe);
             imgUser = itemView.findViewById(R.id.imgUser);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            tvRejectReason = itemView.findViewById(R.id.tvRejectReason);
             btnFavorite = itemView.findViewById(R.id.btnFavorite);
         }
     }

@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,13 +23,14 @@ public class MyRecipesFragment extends Fragment implements RecipeUserAdapter.OnR
     private RecipeUserAdapter recipeUserAdapter;
     private KET_NOI_CSDL db;
     private ArrayList<Recipe> userRecipes;
+    private ArrayList<Recipe> filteredRecipes;
     private int userId;
 
+    private Button btnPending, btnAccepted, btnRejected;
     private static final int REQUEST_CODE_DETAIL = 1000;
 
-    public MyRecipesFragment() { }
+    public MyRecipesFragment() {}
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -37,54 +41,72 @@ public class MyRecipesFragment extends Fragment implements RecipeUserAdapter.OnR
 
         db = new KET_NOI_CSDL(getContext());
 
-        // Nhận userId từ Bundle
         Bundle args = getArguments();
         if (args != null) {
             userId = args.getInt("userId", -1);
         }
 
         userRecipes = db.getRecipesByUserId(userId);
+        filteredRecipes = new ArrayList<>();
 
         Log.d("MyRecipesFragment", "userId = " + userId);
         Log.d("MyRecipesFragment", "Số công thức: " + userRecipes.size());
 
-        // Truyền listener vào adapter để bắt sự kiện click
-        recipeUserAdapter = new RecipeUserAdapter(getContext(), userRecipes, db);
-        recipeUserAdapter.setOnRecipeClickListener(this); // Đăng ký listener
+        recipeUserAdapter = new RecipeUserAdapter(getContext(), filteredRecipes, db);
+        recipeUserAdapter.setOnRecipeClickListener(this);
         recyclerView.setAdapter(recipeUserAdapter);
 
+        btnPending = view.findViewById(R.id.btnPending);
+        btnAccepted = view.findViewById(R.id.btnAccepted);
+        btnRejected = view.findViewById(R.id.btnRejected);
+
+        btnPending.setOnClickListener(v -> filterRecipes(null));
+        btnAccepted.setOnClickListener(v -> filterRecipes(1));
+        btnRejected.setOnClickListener(v -> filterRecipes(0));
+
+        // Mặc định hiển thị các công thức đang chờ duyệt
+        filterRecipes(null);
+
         return view;
+    }
+
+    private void filterRecipes(Integer status) {
+        filteredRecipes.clear();
+        for (Recipe r : userRecipes) {
+            if (status == null && r.getIsApproved() == null) {
+                filteredRecipes.add(r);
+            } else if (status != null && status.equals(r.getIsApproved())) {
+                filteredRecipes.add(r);
+            }
+        }
+        recipeUserAdapter.notifyDataSetChanged();
     }
 
     public void loadRecipeList() {
         userRecipes.clear();
         userRecipes.addAll(db.getRecipesByUserId(userId));
-        recipeUserAdapter.notifyDataSetChanged();
+        filterRecipes(null); // làm mới theo bộ lọc mặc định
     }
 
-    // --- Thêm phương thức xử lý sự kiện click mở Detail ---
     @Override
     public void onRecipeClick(Recipe recipe) {
         Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
         intent.putExtra("recipe", recipe);
-        // Gọi startActivityForResult từ Fragment
+        intent.putExtra("ingredients", db.getIngredientsByRecipeId(recipe.getRecipeId()));
         startActivityForResult(intent, REQUEST_CODE_DETAIL);
     }
 
-    // Nhận kết quả trả về từ Detail
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_DETAIL && resultCode == getActivity().RESULT_OK) {
-            // Load lại danh sách công thức khi có thay đổi (ví dụ xóa công thức)
-            loadRecipeList();
-        }
-    }
     @Override
     public void onResume() {
         super.onResume();
-        // Load lại danh sách công thức từ CSDL khi fragment được hiện lại
         loadRecipeList();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_DETAIL && resultCode == getActivity().RESULT_OK) {
+            loadRecipeList();
+        }
+    }
 }
