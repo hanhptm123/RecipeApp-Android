@@ -63,6 +63,11 @@
             android:contentDescription="@string/desc_logout"
             app:tint="#000000" />
     </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewRecipes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp" />
 
     <!-- Main Content -->
     <FrameLayout

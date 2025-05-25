@@ -3,9 +3,6 @@ package com.example.recipeapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
 
-import org.jspecify.annotations.NonNull;
+import com.bumptech.glide.Glide;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +29,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private KET_NOI_CSDL dbHelper;
     private int userId;
 
+    public interface OnRecipeClickListener {
+        void onRecipeClick(Recipe recipe);
+    }
+    private OnRecipeClickListener listener;
+
+    public void setOnRecipeClickListener(OnRecipeClickListener listener) {
+        this.listener = listener;
+    }
+
     public RecipeAdapter(Context context, List<Recipe> recipeList, KET_NOI_CSDL dbHelper) {
         this.recipeList = recipeList;
         this.context = context;
         this.dbHelper = dbHelper;
-        this.currentUserId = currentUserId;
+
         SharedPreferences sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        this.userId = sharedPref.getInt("UserID", -1); // -1 nếu không có
+        this.currentUserId = sharedPref.getInt("UserID", -1);
+        this.userId = this.currentUserId;
     }
+
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -57,25 +65,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.tvDate.setText("Posted On: " + recipe.getDate());
         holder.tvUser.setText(String.valueOf(recipe.getUserId()));
 
-        // Load ảnh món ăn
+        // Load ảnh món ăn bằng Glide
         String imagePath = recipe.getImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
-            try {
-                Uri uri = Uri.parse(imagePath);
-                InputStream inputStream = context.getContentResolver().openInputStream(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                if (bitmap != null) {
-                    holder.imgRecipe.setImageBitmap(bitmap);
-                } else {
-                    holder.imgRecipe.setImageResource(R.drawable.pho);
-                }
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                holder.imgRecipe.setImageResource(R.drawable.pho);
-            }
+            Glide.with(context)
+                    .load(imagePath)
+                    .placeholder(R.drawable.pho)
+                    .error(R.drawable.pho)
+                    .into(holder.imgRecipe);
         } else {
             holder.imgRecipe.setImageResource(R.drawable.pho);
         }
@@ -96,7 +93,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 // Chưa đăng nhập
                 Toast.makeText(context, "Please login to add favourites.", Toast.LENGTH_SHORT).show();
             } else {
-                // Đã đăng nhập → xử lý yêu thích
                 boolean currentFav = dbHelper.isRecipeFavourited(userId, recipe.getId());
                 if (currentFav) {
                     dbHelper.removeFavourite(userId, recipe.getId());
@@ -108,24 +104,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             }
         });
 
-
-        // Chuyển sang chi tiết công thức
+        // Xử lý nhấn item
         holder.itemView.setOnClickListener(view -> {
-            int pos = holder.getAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                Recipe selectedRecipe = recipeList.get(pos);
-                int recipeId = selectedRecipe.getId();
+            if (listener != null) {
+                listener.onRecipeClick(recipe);
+            } else {
+                // Nếu không có listener, mở trực tiếp detail
+                int recipeId = recipe.getId();
                 Log.d("DB_LOG", "Clicked recipe id = " + recipeId);
                 dbHelper.increaseCountView(recipeId);
 
-                ArrayList<DetailRecipeIngredient> selectedIngredients = selectedRecipe.getDetailIngredients();
+                ArrayList<DetailRecipeIngredient> selectedIngredients = recipe.getDetailIngredients();
                 if (selectedIngredients == null || selectedIngredients.isEmpty()) {
                     selectedIngredients = dbHelper.getIngredientsByRecipeId(recipeId);
                 }
 
                 Intent intent = new Intent(view.getContext(), RecipeDetailHomeActivity.class);
-
-                intent.putExtra("recipe", selectedRecipe);
+                intent.putExtra("recipe", recipe);
                 intent.putExtra("ingredients", selectedIngredients);
                 intent.putExtra("currentUserId", currentUserId);
                 view.getContext().startActivity(intent);
@@ -158,10 +153,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
-
     public void updateData(List<Recipe> newRecipeList) {
         this.recipeList = newRecipeList;
         notifyDataSetChanged();
     }
-
 }

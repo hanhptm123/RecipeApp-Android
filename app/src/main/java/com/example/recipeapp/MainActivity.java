@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         dbHelper = new KET_NOI_CSDL(this, "RecipeDB.db", null, 2);
-        themNguyenLieuMau();
+//        themNguyenLieuMau();
 
         loadRecipes();
 
@@ -75,16 +75,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Thêm dữ liệu mẫu nếu chưa có
-    private void themNguyenLieuMau() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        try {
-            db.execSQL("INSERT OR IGNORE INTO DetailRecipeIngredient (RecipeID, IngredientID, Amount) VALUES (?, ?, ?)",
-                    new Object[]{1, "Đường", "2 muỗng"});
-            Toast.makeText(this, "Thêm nguyên liệu mẫu nếu chưa có", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Lỗi khi thêm nguyên liệu mẫu: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
+//    private void themNguyenLieuMau() {
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        try {
+//            db.execSQL("INSERT OR IGNORE INTO DetailRecipeIngredient (RecipeID, IngredientID, Amount) VALUES (?, ?, ?)",
+//                    new Object[]{1, "Đường", "2 muỗng"});
+//            Toast.makeText(this, "Thêm nguyên liệu mẫu nếu chưa có", Toast.LENGTH_SHORT).show();
+//        } catch (Exception e) {
+//            Toast.makeText(this, "Lỗi khi thêm nguyên liệu mẫu: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//        }
+//    }
 
     // Load danh sách món ăn và nguyên liệu tương ứng
     private void loadRecipes() {

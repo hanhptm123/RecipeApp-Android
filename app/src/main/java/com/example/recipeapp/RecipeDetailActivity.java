@@ -164,11 +164,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private void displayRecipeInfo(Recipe recipe) {
         textTitle.setText(recipe.getTitle());
-        textTime.setText("Time: " + recipe.getTime());
-        textType.setText("Type: " + recipe.getType());
-        textOrigin.setText("Origin: " + recipe.getOrigin());
-        textDate.setText("Posted on: " + recipe.getDate());
-        textUser.setText("Posted by: " + recipe.getUserId());
+        textTime.setText("Thời gian: " + recipe.getTime());
+        textType.setText("Loại: " + recipe.getType());
+        textOrigin.setText("Xuất xứ: " + recipe.getOrigin());
+        textDate.setText("Ngày đăng: " + recipe.getDate());
+        textUser.setText("Người đăng: " + recipe.getUserId());
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
 
@@ -176,7 +176,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         if (imagePath != null && !imagePath.isEmpty()) {
             Glide.with(this)
-                    .load(imagePath)
+                    .load(imagePath)  // Load trực tiếp đường dẫn chuỗi
                     .placeholder(R.drawable.chebamau)
                     .error(R.drawable.chebamau)
                     .into(imageRecipe);
@@ -184,7 +184,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
             imageRecipe.setImageResource(R.drawable.chebamau); // Ảnh mặc định
         }
     }
-
 
     private void displayIngredients(List<DetailRecipeIngredient> ingredients) {
         ingredientsContainer.removeAllViews();
