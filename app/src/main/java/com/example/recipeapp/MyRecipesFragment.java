@@ -16,23 +16,20 @@ import java.util.ArrayList;
 public class MyRecipesFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private RecipeAdapter recipeAdapter;
+    private RecipeUserAdapter recipeUserAdapter;
     private KET_NOI_CSDL db;
     private ArrayList<Recipe> userRecipes;
     private int userId;
 
     public MyRecipesFragment() {
-        // Bắt buộc phải có constructor rỗng khi dùng Fragment + Bundle
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_fragment_recipes, container, false);
+        View view = inflater.inflate(R.layout.layout_fragment_recipes_user, container, false);
 
-        if (userRecipes == null || userRecipes.isEmpty()) {
-            Toast.makeText(getContext(), "Không có công thức nào!", Toast.LENGTH_SHORT).show();
-        }
 
         recyclerView = view.findViewById(R.id.rvRecipes);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -53,8 +50,8 @@ public class MyRecipesFragment extends Fragment {
         Log.d("MyRecipesFragment", "userId = " + userId);
         Log.d("MyRecipesFragment", "Số công thức: " + userRecipes.size());
 
-        recipeAdapter = new RecipeAdapter(getContext(), userRecipes, db);
-        recyclerView.setAdapter(recipeAdapter);
+        recipeUserAdapter = new RecipeUserAdapter(getContext(), userRecipes, db);
+        recyclerView.setAdapter(recipeUserAdapter);
 
         return view;
     }

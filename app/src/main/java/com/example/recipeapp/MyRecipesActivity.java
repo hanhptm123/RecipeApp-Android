@@ -35,5 +35,6 @@ public class MyRecipesActivity extends AppCompatActivity {
                 finish(); // Quay lại màn hình trước đó
             }
         });
+
     }
 }
