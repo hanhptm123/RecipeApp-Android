@@ -161,10 +161,9 @@ import java.util.ArrayList;
             this.description = description;
         }
 
-        public String setType(String type) {
-            return type;
+        public void setType(String type) {
+            this.type = type;
         }
-
         public void setTime(String time) {
             this.time = time;
         }

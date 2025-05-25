@@ -161,14 +161,14 @@
             android:orientation="horizontal"
             android:layout_marginTop="24dp"
             android:gravity="center"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <Button
                 android:id="@+id/btn_go_back"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:text="⬅ Go Back"
                 android:backgroundTint="#A5D6A7"
                 android:textColor="#1B5E20" />
@@ -178,10 +178,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="✏️ Edit"
                 android:backgroundTint="#66BB6A"
                 android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="🗑 Delete"
+                android:backgroundTint="#EF9A9A"
+                android:textColor="#B71C1C" />
+
         </LinearLayout>
         <!-- Đánh giá và bình luận -->
         <TextView

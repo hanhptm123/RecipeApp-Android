@@ -1,6 +1,7 @@
 package com.example.recipeapp;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -21,10 +22,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private TextView textTitle, textTime, textType, textOrigin, textDate, textUser, textInstruction, textDescription;
     private TextView textRatingCount, textRatingSummary, textCountView;
     private LinearLayout ingredientsContainer, commentSection;
-    private Button btnGoBack, btnEdit, btnSubmitRating;
+    private Button btnGoBack, btnEdit, btnDelete, btnSubmitRating;
     private RatingBar ratingBar, ratingAverage;
     private EditText editComment;
     private RecyclerView recyclerComments;
+
 
     private KET_NOI_CSDL db;
     private Recipe recipe;
@@ -42,32 +44,31 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         db = new KET_NOI_CSDL(this);
 
-        // Ánh xạ view
+        // Map views
         mapViews();
 
-        // Nhận dữ liệu từ Intent
+        // Get data from Intent
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
         detailIngredients = (ArrayList<DetailRecipeIngredient>) getIntent().getSerializableExtra("ingredients");
         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         currentUserId = sharedPref.getInt("UserID", -1);
+        btnDelete.setVisibility(recipe.getUserId() == currentUserId ? View.VISIBLE : View.GONE);
 
-        // Load avatar người dùng
+        // Load user avatar
         loadUserAvatar(currentUserId);
 
         if (recipe != null) {
             currentRecipeId = recipe.getRecipeId();
             displayRecipeInfo(recipe);
             displayIngredients(detailIngredients);
-            textCountView.setText("Lượt xem: " + recipe.getCountView());
+            textCountView.setText("Views: " + recipe.getCountView());
 
-            // Hiển thị hoặc ẩn nút Edit
-
+            // Show or hide Edit button
             btnEdit.setVisibility(recipe.getUserId() == currentUserId ? View.VISIBLE : View.GONE);
             Log.d("RECIPE_USER", "recipe.getUserId(): " + recipe.getUserId());
             Log.d("CURRENT_USER", "currentUserId: " + currentUserId);
 
-
-            // Xử lý rating/comment
+            // Handle rating/comment
             boolean isOwner = (currentUserId == recipe.getUserId());
             boolean hasRatedOrCommented = db.hasUserRated(currentRecipeId, currentUserId) || db.hasUserCommented(currentRecipeId, currentUserId);
 
@@ -75,20 +76,37 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
             btnSubmitRating.setOnClickListener(v -> submitRating());
 
-            // Xử lý hiển thị bình luận
+            // Setup comment section display
             setupCommentSection();
 
-            // Gán sự kiện nút
+            // Set button events
             btnGoBack.setOnClickListener(v -> finish());
             btnEdit.setOnClickListener(v -> {
-                // Gán danh sách nguyên liệu cho recipe trước khi gửi
+                // Assign ingredient list to recipe before sending
                 recipe.setDetailIngredients(detailIngredients);
 
                 Intent intent = new Intent(this, EditRecipeActivity.class);
                 intent.putExtra("RECIPE_TO_EDIT", recipe);
                 startActivityForResult(intent, 1001);
             });
-
+            btnDelete.setOnClickListener(v -> {
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm Deletion")
+                        .setMessage("Are you sure you want to delete this recipe?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            boolean deletedRecipe = db.deleteRecipe(currentRecipeId);
+                            if (deletedRecipe) {
+                                Toast.makeText(this, "Recipe deleted", Toast.LENGTH_SHORT).show();
+                                // Return to MainActivity to reload the list
+                                setResult(RESULT_OK);
+                                finish(); // Exit current screen
+                            } else {
+                                Toast.makeText(this, "Deletion failed", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            });
 
             setupFilterButtons();
         }
@@ -117,6 +135,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         btnEdit = findViewById(R.id.btnEdit);
         btnSubmitRating = findViewById(R.id.rating_btn_submit_comment);
         recyclerComments = findViewById(R.id.recycler_comments);
+        btnDelete = findViewById(R.id.btnDelete);
     }
 
     private void loadUserAvatar(int userId) {
@@ -145,14 +164,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private void displayRecipeInfo(Recipe recipe) {
         textTitle.setText(recipe.getTitle());
-        textTime.setText("Thời gian: " + recipe.getTime());
-        textType.setText("Loại: " + recipe.getType());
-        textOrigin.setText("Xuất xứ: " + recipe.getOrigin());
-        textDate.setText("Ngày đăng: " + recipe.getDate());
-        textUser.setText("Người đăng: " + recipe.getUserId());
+        textTime.setText("Time: " + recipe.getTime());
+        textType.setText("Type: " + recipe.getType());
+        textOrigin.setText("Origin: " + recipe.getOrigin());
+        textDate.setText("Posted on: " + recipe.getDate());
+        textUser.setText("Posted by: " + recipe.getUserId());
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
-        imageRecipe.setImageResource(R.drawable.chebamau); // Ảnh tạm
+        imageRecipe.setImageResource(R.drawable.chebamau); // Placeholder image
     }
 
     private void displayIngredients(List<DetailRecipeIngredient> ingredients) {
@@ -170,19 +189,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
         String comment = editComment.getText().toString().trim();
 
         if (ratingScore < 1 || ratingScore > 5) {
-            Toast.makeText(this, "Vui lòng chọn đánh giá từ 1 đến 5 sao", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select a rating from 1 to 5 stars", Toast.LENGTH_SHORT).show();
             return;
         }
 
         long result = db.insertRating(currentRecipeId, currentUserId, ratingScore, comment);
         if (result != -1) {
-            Toast.makeText(this, "Đánh giá đã được gửi!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Rating submitted!", Toast.LENGTH_SHORT).show();
             commentSection.setVisibility(View.GONE);
             allComments = db.getCommentsByRecipeId(currentRecipeId);
             commentAdapter.updateData(allComments);
             updateRatingSummary();
         } else {
-            Toast.makeText(this, "Gửi đánh giá thất bại!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to submit rating!", Toast.LENGTH_SHORT).show();
         }
     }
 

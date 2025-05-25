@@ -16,9 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jspecify.annotations.NonNull;
-
+import androidx.annotation.NonNull;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,15 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
     private int currentUserId;
     private KET_NOI_CSDL dbHelper;
     private int userId;
+    public interface OnRecipeClickListener {
+        void onRecipeClick(Recipe recipe);
+    }
+
+    private OnRecipeClickListener listener;
+
+    public void setOnRecipeClickListener(OnRecipeClickListener listener) {
+        this.listener = listener;
+    }
 
     public RecipeUserAdapter(Context context, List<Recipe> recipeList, KET_NOI_CSDL dbHelper) {
         this.recipeList = recipeList;
@@ -46,7 +53,6 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_recipe_user, parent, false);
         return new RecipeViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
