@@ -51,14 +51,14 @@ public class EditRecipeActivity extends AppCompatActivity {
         if (obj instanceof Recipe) {
             recipe = (Recipe) obj;
             Log.d("EditRecipeActivity", "Received Recipe: " + recipe.getTitle());
-            SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
-            int currentUserId = prefs.getInt("USER_ID", -1);
-
-            if (recipe.getUserId() != currentUserId) {
-                Toast.makeText(this, "Bạn không có quyền chỉnh sửa công thức này", Toast.LENGTH_LONG).show();
-                finish(); // Đóng activity nếu không đúng người đăng
-                return;
-            }
+//            SharedPreferences prefs = getSharedPreferences("USER_SESSION", MODE_PRIVATE);
+//            int currentUserId = prefs.getInt("USER_ID", -1);
+//
+//            if (recipe.getUserId() != currentUserId) {
+//                Toast.makeText(this, "Bạn không có quyền chỉnh sửa công thức này", Toast.LENGTH_LONG).show();
+//                finish(); // Đóng activity nếu không đúng người đăng
+//                return;
+//            }
 
             populateFields(recipe);
         } else {

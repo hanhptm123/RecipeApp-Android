@@ -37,13 +37,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         this.context = context;
         this.dbHelper = dbHelper;
         this.currentUserId = currentUserId;
-    }
-
-        // Lấy UserID từ SharedPreferences
         SharedPreferences sharedPref = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         this.userId = sharedPref.getInt("UserID", -1); // -1 nếu không có
     }
-
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -129,7 +125,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
                 Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
 
-                intent.putExtra("recipe", selectedRecipe); 
+                intent.putExtra("recipe", selectedRecipe);
                 intent.putExtra("ingredients", selectedIngredients);
                 intent.putExtra("currentUserId", currentUserId);
                 view.getContext().startActivity(intent);
@@ -162,8 +158,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
+
     public void updateData(List<Recipe> newRecipeList) {
         this.recipeList = newRecipeList;
         notifyDataSetChanged();
     }
+
 }
