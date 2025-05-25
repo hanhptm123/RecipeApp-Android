@@ -48,7 +48,8 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
         holder.tvType.setText("Category: " + recipe.getType());
         holder.tvOrigin.setText("Origin: " + recipe.getOrigin());
         holder.tvDate.setText("Posted On: " + recipe.getDate());
-        holder.tvUser.setText(recipe.getUser());
+        holder.tvUser.setText(String.valueOf(recipe.getUserId())); // ✅ OK
+
 
         // Load ảnh từ imagePath
         String imagePath = recipe.getImagePath();
