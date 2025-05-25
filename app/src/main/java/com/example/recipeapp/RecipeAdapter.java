@@ -123,7 +123,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                     selectedIngredients = dbHelper.getIngredientsByRecipeId(recipeId);
                 }
 
-                Intent intent = new Intent(view.getContext(), RecipeDetailActivity.class);
+                Intent intent = new Intent(view.getContext(), RecipeDetailHomeActivity.class);
 
                 intent.putExtra("recipe", selectedRecipe);
                 intent.putExtra("ingredients", selectedIngredients);

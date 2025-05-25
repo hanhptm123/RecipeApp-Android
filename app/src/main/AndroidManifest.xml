@@ -48,6 +48,7 @@
         <activity android:name=".searchRecipesByIngredient" />
         <activity android:name=".TopRecipeActivity"/>
         <activity android:name="com.example.recipeapp.Favourite_list" />
+        <activity android:name="com.example.recipeapp.RecipeDetailHomeActivity" />
     </application>
 
 </manifest>
