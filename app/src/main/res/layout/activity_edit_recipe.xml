@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#F1F8E9"> <!-- Light green background -->
+    android:background="#F1F8E9">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,23 +52,40 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp" />
 
-        <!-- Image & Time -->
+        <!-- Image section -->
+        <TextView
+            android:text="🖼️ Image"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#33691E"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnChooseFile"
+            android:text="Choose Image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#81C784"
+            android:textColor="#1B5E20"
+            android:layout_marginBottom="8dp" />
+
+        <ImageView
+            android:id="@+id/imageRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp"
+            android:background="#C8E6C9" />
+
+        <!-- Time & Origin -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
             android:layout_marginBottom="12dp">
-
-            <Button
-                android:id="@+id/btnChooseFile"
-                android:text="Choose Image"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#81C784"
-                android:textColor="#1B5E20"
-                android:layout_marginEnd="8dp" />
 
             <EditText
                 android:id="@+id/editTime"
@@ -78,15 +95,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_background"
-                android:padding="12dp" />
-        </LinearLayout>
+                android:padding="12dp"
+                android:layout_marginEnd="8dp" />
 
-        <!-- Origin -->
-        <Spinner
-            android:id="@+id/spinnerOrigin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            <Spinner
+                android:id="@+id/spinnerOrigin"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <!-- Ingredients section -->
         <TextView
@@ -98,7 +115,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- Scrollable ingredient list -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="150dp"

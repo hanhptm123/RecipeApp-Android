@@ -187,17 +187,17 @@ import java.util.ArrayList;
         public void setImagePath(String imagePath) {
             this.imagePath = imagePath;
         }
-//        public int getUserId() {
-//            if (user != null) {
-//                try {
-//                    return Integer.parseInt(user);
-//                } catch (NumberFormatException e) {
-//                    // Nếu user không phải là số hợp lệ
-//                    return -1; // hoặc giá trị báo lỗi
-//                }
-//            }
-//            return -1; // nếu user null
-//        }
+////        public int getUserId() {
+////            if (user != null) {
+////                try {
+////                    return Integer.parseInt(user);
+////                } catch (NumberFormatException e) {
+////                    // Nếu user không phải là số hợp lệ
+////                    return -1; // hoặc giá trị báo lỗi
+////                }
+////            }
+////            return -1; // nếu user null
+////        }
 
 
 

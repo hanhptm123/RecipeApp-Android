@@ -457,6 +457,8 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             values.put("CategoryId", recipe.getCategoryId()); // dùng đúng tên cột
             values.put("origin", recipe.getOrigin());         // dùng đúng tên cột
             values.put("type", recipe.getType());
+            values.put("imagePath", recipe.getImagePath());
+
 
 
             // Cập nhật công thức
