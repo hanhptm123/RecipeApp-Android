@@ -1,5 +1,6 @@
 package com.example.recipeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,13 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class MyRecipesFragment extends Fragment {
+public class MyRecipesFragment extends Fragment implements RecipeUserAdapter.OnRecipeClickListener {
 
     private RecyclerView recyclerView;
     private RecipeUserAdapter recipeUserAdapter;
@@ -24,11 +27,13 @@ public class MyRecipesFragment extends Fragment {
     private int userId;
 
     private Button btnPending, btnAccepted, btnRejected;
+    private static final int REQUEST_CODE_DETAIL = 1000;
 
-    public MyRecipesFragment() { }
+    public MyRecipesFragment() {}
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_fragment_recipes_user, container, false);
 
         recyclerView = view.findViewById(R.id.rvRecipes);
@@ -41,23 +46,25 @@ public class MyRecipesFragment extends Fragment {
             userId = args.getInt("userId", -1);
         }
 
-        userRecipes = db.getRecipesByUserId(userId); // Toàn bộ recipe của user
+        userRecipes = db.getRecipesByUserId(userId);
         filteredRecipes = new ArrayList<>();
 
+        Log.d("MyRecipesFragment", "userId = " + userId);
+        Log.d("MyRecipesFragment", "Số công thức: " + userRecipes.size());
+
         recipeUserAdapter = new RecipeUserAdapter(getContext(), filteredRecipes, db);
+        recipeUserAdapter.setOnRecipeClickListener(this);
         recyclerView.setAdapter(recipeUserAdapter);
 
-        // Ánh xạ nút
         btnPending = view.findViewById(R.id.btnPending);
         btnAccepted = view.findViewById(R.id.btnAccepted);
         btnRejected = view.findViewById(R.id.btnRejected);
 
-        // Gán sự kiện lọc
         btnPending.setOnClickListener(v -> filterRecipes(null));
         btnAccepted.setOnClickListener(v -> filterRecipes(1));
         btnRejected.setOnClickListener(v -> filterRecipes(0));
 
-        // Mặc định hiển thị các recipe đang chờ duyệt
+        // Mặc định hiển thị các công thức đang chờ duyệt
         filterRecipes(null);
 
         return view;
@@ -73,5 +80,33 @@ public class MyRecipesFragment extends Fragment {
             }
         }
         recipeUserAdapter.notifyDataSetChanged();
+    }
+
+    public void loadRecipeList() {
+        userRecipes.clear();
+        userRecipes.addAll(db.getRecipesByUserId(userId));
+        filterRecipes(null); // làm mới theo bộ lọc mặc định
+    }
+
+    @Override
+    public void onRecipeClick(Recipe recipe) {
+        Intent intent = new Intent(getContext(), RecipeDetailActivity.class);
+        intent.putExtra("recipe", recipe);
+        intent.putExtra("ingredients", db.getIngredientsByRecipeId(recipe.getRecipeId()));
+        startActivityForResult(intent, REQUEST_CODE_DETAIL);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadRecipeList();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_DETAIL && resultCode == getActivity().RESULT_OK) {
+            loadRecipeList();
+        }
     }
 }

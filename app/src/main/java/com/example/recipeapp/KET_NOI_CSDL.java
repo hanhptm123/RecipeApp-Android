@@ -16,7 +16,7 @@ import java.util.List;
 
 public class KET_NOI_CSDL extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipeDB.db";
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
     public KET_NOI_CSDL(@Nullable Context context, String s, Object o, int i) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -85,7 +85,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "CreatedAt TEXT, " +
                 "RecipeID INTEGER, " +
                 "UserID INTEGER, " +
-                "FOREIGN KEY(RecipeID) REFERENCES Recipes(RecipeID), " +
+                "FOREIGN KEY(RecipeID) REFERENCES RecipeTable(id), " +
                 "FOREIGN KEY(UserID) REFERENCES Users(UserID))");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Favourites (" +
@@ -115,7 +115,11 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "('User1', 'user1@example.com', 'password1', 'User', 0, NULL, '456 User Ave', '0987654321', 'Female', NULL), " +
                 "('BannedUser', 'banned@example.com', '123456', 'User', 1, NULL, '789 Banned Rd', '0111222333', 'Other', 'Vi phạm nội quy')");
     }
-
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);  // BẮT BUỘC nếu dùng FOREIGN KEY
+    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS Favourites");
@@ -450,6 +454,10 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             values.put("Time", recipe.getTime());
             values.put("Instructions", recipe.getInstructions());
             values.put("UpdatedAt", System.currentTimeMillis());
+            values.put("CategoryId", recipe.getCategoryId()); // dùng đúng tên cột
+            values.put("origin", recipe.getOrigin());         // dùng đúng tên cột
+            values.put("type", recipe.getType());
+
 
             // Cập nhật công thức
             db.update("RecipeTable", values, "id = ?", new String[]{String.valueOf(recipe.getRecipeId())});
@@ -837,5 +845,20 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         return favouriteRecipes;
     }
-
+    public boolean deleteRecipe(int recipeId) {
+        SQLiteDatabase dbWritable = this.getWritableDatabase();
+        try {
+            int ingredientsDeleted = dbWritable.delete("DetailRecipeIngredient", "RecipeID = ?", new String[]{String.valueOf(recipeId)});
+            int ratingsDeleted = dbWritable.delete("Ratings", "RecipeID = ?", new String[]{String.valueOf(recipeId)});
+            int recipesDeleted = dbWritable.delete("RecipeTable", "id = ?", new String[]{String.valueOf(recipeId)});
+            Log.d("DELETE_LOG", "RecipeID = " + recipeId +
+                    " | Ingredients deleted = " + ingredientsDeleted +
+                    " | Ratings deleted = " + ratingsDeleted +
+                    " | Recipes deleted = " + recipesDeleted);
+            return recipesDeleted > 0;
+        } catch (Exception e) {
+            Log.e("DELETE_RECIPE", "Lỗi khi xóa công thức: " + e.getMessage());
+            return false;
+        }
+    }
 }

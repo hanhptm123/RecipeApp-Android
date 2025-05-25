@@ -164,7 +164,7 @@ public class EditRecipeActivity extends AppCompatActivity {
             return;
         }
 
-        // Get category ID
+        // Lấy tên category từ spinner
         String selectedCategoryName = spinnerCategory.getSelectedItem().toString();
         Integer categoryId = db.getCategoryIdByName(selectedCategoryName);
         if (categoryId == null) {
@@ -172,22 +172,28 @@ public class EditRecipeActivity extends AppCompatActivity {
             return;
         }
 
-        // Get origin
+        // Gán categoryId cho recipe
+        recipe.setCategoryId(categoryId);
+
+        // Gán type cho recipe (lấy tên type, có thể chính là selectedCategoryName hoặc spinner khác nếu có)
+        // Nếu bạn có spinner riêng cho type thì lấy từ đó, còn không thì dùng categoryName luôn
+        recipe.setType(selectedCategoryName);
+
+        // Lấy origin từ spinner
         String origin = spinnerOrigin.getSelectedItem() != null ? spinnerOrigin.getSelectedItem().toString() : "";
         if (origin.isEmpty()) {
             Toast.makeText(this, "Please select an origin", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Update recipe information
+        // Cập nhật các trường khác
         recipe.setTitle(title);
         recipe.setDescription(description);
         recipe.setTime(time);
         recipe.setInstructions(instructions);
-        recipe.setCategoryId(categoryId);
         recipe.setOrigin(origin);
 
-        // Collect ingredient list
+        // Thu thập danh sách nguyên liệu
         ArrayList<DetailRecipeIngredient> updatedIngredients = new ArrayList<>();
         for (int i = 0; i < layoutIngredients.getChildCount(); i++) {
             View row = layoutIngredients.getChildAt(i);
@@ -211,12 +217,11 @@ public class EditRecipeActivity extends AppCompatActivity {
             return;
         }
 
-        // Update database
+        // Cập nhật database
         boolean success = db.updateRecipeAndIngredients(recipe, updatedIngredients);
         if (success) {
             Toast.makeText(this, "Recipe updated successfully", Toast.LENGTH_SHORT).show();
 
-            // ✅ Update ingredient list before returning
             recipe.setDetailIngredients(updatedIngredients);
 
             Intent resultIntent = new Intent();

@@ -1,5 +1,6 @@
 package com.example.recipeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MyRecipesActivity extends AppCompatActivity {
+    private MyRecipesFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +21,7 @@ public class MyRecipesActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("userId", userId);
 
-        MyRecipesFragment fragment = new MyRecipesFragment();
+        fragment = new MyRecipesFragment();
         fragment.setArguments(bundle);
 
         getSupportFragmentManager()
@@ -35,6 +37,14 @@ public class MyRecipesActivity extends AppCompatActivity {
                 finish(); // Quay lại màn hình trước đó
             }
         });
-
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            if (fragment != null) {
+                fragment.loadRecipeList();  // ✅ Gọi từ fragment
+            }
+            }
     }
 }
