@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,10 +140,20 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
         textUser.setText("Người đăng: " + recipe.getUserId());
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
-        imageRecipe.setImageResource(R.drawable.chebamau); // Ảnh tạm
-    }
+        String imagePath = recipe.getImagePath();
+        Log.d("RecipeDetailHomeActivity", "Image path: " + imagePath);
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Glide.with(this)
+                    .load(Uri.fromFile(new File(imagePath)))
+                    .placeholder(R.drawable.chebamau)
+                    .error(R.drawable.chebamau)
+                    .into(imageRecipe);
+        } else {
+            imageRecipe.setImageResource(R.drawable.chebamau);
+        }
+}
 
-    private void displayIngredients(List<DetailRecipeIngredient> ingredients) {
+        private void displayIngredients(List<DetailRecipeIngredient> ingredients) {
         ingredientsContainer.removeAllViews();
         for (DetailRecipeIngredient dri : ingredients) {
             TextView tv = new TextView(this);
