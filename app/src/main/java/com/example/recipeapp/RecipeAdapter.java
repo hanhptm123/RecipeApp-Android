@@ -3,6 +3,7 @@ package com.example.recipeapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +64,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.tvType.setText("Category: " + recipe.getType());
         holder.tvOrigin.setText("Origin: " + recipe.getOrigin());
         holder.tvDate.setText("Posted On: " + recipe.getDate());
-        holder.tvUser.setText(String.valueOf(recipe.getUserId()));
+        // Lấy username của chủ công thức
+        int recipeOwnerId = recipe.getUserId();
+        Cursor userCursor = dbHelper.Doc_bang("SELECT UserName FROM Users WHERE UserID = " + recipeOwnerId);
+        if (userCursor != null && userCursor.moveToFirst()) {
+            int colIndex = userCursor.getColumnIndex("UserName");
+            if (colIndex != -1) {
+                String username = userCursor.getString(colIndex);
+                holder.tvUser.setText(username);
+            } else {
+                holder.tvUser.setText("Unknown");
+            }
+            userCursor.close();
+        } else {
+            holder.tvUser.setText("Unknown");
+        }
+
+
 
         // Load ảnh món ăn bằng Glide
         String imagePath = recipe.getImagePath();
@@ -77,7 +94,29 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             holder.imgRecipe.setImageResource(R.drawable.pho);
         }
 
-        holder.imgUser.setImageResource(recipe.getUserImage());
+        // Lấy avatar của chủ công thức từ CSDL
+
+        Cursor cursor = dbHelper.Doc_bang("SELECT Avatar FROM Users WHERE UserID = " + recipeOwnerId);
+        String avatarName = null;
+        if (cursor.moveToFirst()) {
+            int colIndex = cursor.getColumnIndex("Avatar");
+            if (colIndex != -1) {
+                avatarName = cursor.getString(colIndex);
+            }
+        }
+        cursor.close();
+
+        if (avatarName == null || avatarName.equals("profile.png")) {
+            holder.imgUser.setImageResource(R.drawable.profile); // Ảnh mặc định
+        } else {
+            Glide.with(context)
+                    .load(avatarName) // Đường dẫn hoặc URL ảnh
+                    .placeholder(R.drawable.profile)
+                    .error(R.drawable.profile)
+                    .circleCrop()
+                    .into(holder.imgUser);
+        }
+
 
         // Lấy điểm trung bình số sao từ CSDL
         float avgRating = dbHelper.getAverageRatingByRecipeId(recipe.getId());
@@ -97,12 +136,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 if (currentFav) {
                     dbHelper.removeFavourite(userId, recipe.getId());
                     holder.btnFavorite.setImageResource(R.drawable.heart_no_color);
+                    Toast.makeText(context, "Removed from favourites: " + recipe.getTitle(), Toast.LENGTH_SHORT).show();
                 } else {
                     dbHelper.addFavourite(userId, recipe.getId());
                     holder.btnFavorite.setImageResource(R.drawable.heart_color);
+                    Toast.makeText(context, "Added to favourites: " + recipe.getTitle(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
 
         // Xử lý nhấn item
         holder.itemView.setOnClickListener(view -> {

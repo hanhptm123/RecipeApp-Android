@@ -151,7 +151,10 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
         textType.setText("Loại: " + recipe.getType());
         textOrigin.setText("Xuất xứ: " + recipe.getOrigin());
         textDate.setText("Ngày đăng: " + recipe.getDate());
-        textUser.setText("Người đăng: " + recipe.getUserId());
+        String username = db.getUsernameByUserId(recipe.getUserId());
+        Log.d("DEBUG_USERNAME", "Username: " + username);
+
+        textUser.setText("Người đăng: " + username);
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
         String imagePath = recipe.getImagePath();
@@ -182,21 +185,22 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
         String comment = editComment.getText().toString().trim();
 
         if (ratingScore < 1 || ratingScore > 5) {
-            Toast.makeText(this, "Vui lòng chọn đánh giá từ 1 đến 5 sao", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select a rating from 1 to 5 stars", Toast.LENGTH_SHORT).show();
             return;
         }
 
         long result = db.insertRating(currentRecipeId, currentUserId, ratingScore, comment);
         if (result != -1) {
-            Toast.makeText(this, "Đánh giá đã được gửi!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Your rating has been submitted!", Toast.LENGTH_SHORT).show();
             commentSection.setVisibility(View.GONE);
             allComments = db.getCommentsByRecipeId(currentRecipeId);
             commentAdapter.updateData(allComments);
             updateRatingSummary();
         } else {
-            Toast.makeText(this, "Gửi đánh giá thất bại!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to submit rating!", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void setupCommentSection() {
         allComments = db.getCommentsByRecipeId(currentRecipeId);
