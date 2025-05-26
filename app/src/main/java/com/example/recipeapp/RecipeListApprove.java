@@ -1,13 +1,11 @@
 package com.example.recipeapp;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,17 +14,18 @@ public class RecipeListApprove extends AppCompatActivity {
     private Button btnPending, btnAccepted, btnRejected;
     private RecyclerView rvRecipeList;
     private RecipeApproveAdapter adapter;
-    private List<Recipe> fullRecipeList;    // danh sách đầy đủ tất cả recipe
-    private List<Recipe> filteredList;      // danh sách đã lọc theo trạng thái
+    private List<Recipe> fullRecipeList;
+    private List<Recipe> filteredList;
     private Button btnBack;
 
-    // ✅ SỬA 1: Khai báo đối tượng DBHelper
     private KET_NOI_CSDL dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list_approve);
+
+        // Ánh xạ View
         btnBack = findViewById(R.id.btnBack);
         btnPending = findViewById(R.id.btnPending);
         btnAccepted = findViewById(R.id.btnAccepted);
@@ -34,75 +33,68 @@ public class RecipeListApprove extends AppCompatActivity {
         rvRecipeList = findViewById(R.id.rvRecipeList);
 
         rvRecipeList.setLayoutManager(new LinearLayoutManager(this));
-
-        // ✅ SỬA 2: Khởi tạo DBHelper
         dbHelper = new KET_NOI_CSDL(this, null, null, 1);
 
-
-        // ✅ SỬA 3: Lấy dữ liệu từ database
         fullRecipeList = getRecipesFromDatabase();
+        filteredList = new ArrayList<>();
 
-        // Hiển thị toàn bộ ban đầu
-        filteredList = new ArrayList<>(fullRecipeList);
-
-        adapter = new RecipeApproveAdapter(filteredList, new RecipeApproveAdapter.OnRecipeActionListener() {
-            @Override
-            public void onApprove(Recipe recipe) {
-                recipe.setIsApproved(1);
-                updateRecipeStatusInDatabase(recipe); // ✅ SỬA 4: cập nhật trạng thái
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onReject(Recipe recipe) {
-                recipe.setIsApproved(0); // ✅ Đảm bảo trạng thái bị từ chối
-                updateRecipeStatusInDatabase(recipe); // ✅ SỬA 4: cập nhật trạng thái
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onViewDetail(Recipe recipe) {
-                Intent intent = new Intent(RecipeListApprove.this, RecipeDetailActivity.class);
-                intent.putExtra("recipe_id", recipe.getId());
-                startActivity(intent);
-            }
-        });
-
+        adapter = new RecipeApproveAdapter(filteredList, this, dbHelper);
         rvRecipeList.setAdapter(adapter);
-        btnBack.setOnClickListener(v -> {
-            finish();
+
+        // Mặc định lọc danh sách chưa duyệt (Pending)
+        filterRecipesByStatus(null);
+        setSelectedButton(btnPending);
+
+        btnBack.setOnClickListener(v -> finish());
+
+        btnPending.setOnClickListener(v -> {
+            filterRecipesByStatus(null);
+            setSelectedButton(btnPending);
         });
-        btnPending.setOnClickListener(v -> filterRecipesByStatus(null));
-        btnAccepted.setOnClickListener(v -> filterRecipesByStatus(1));
-        btnRejected.setOnClickListener(v -> filterRecipesByStatus(0));
+
+        btnAccepted.setOnClickListener(v -> {
+            filterRecipesByStatus(1);
+            setSelectedButton(btnAccepted);
+        });
+
+        btnRejected.setOnClickListener(v -> {
+            filterRecipesByStatus(0);
+            setSelectedButton(btnRejected);
+        });
     }
 
-    // ✅ SỬA 5: Lọc recipe theo trạng thái duyệt (null = chờ)
     private void filterRecipesByStatus(Integer status) {
         filteredList.clear();
-
         for (Recipe recipe : fullRecipeList) {
-            if (status == null) {
-                if (recipe.getIsApproved() == null) {
-                    filteredList.add(recipe);
-                }
-            } else {
-                if (status.equals(recipe.getIsApproved())) {
-                    filteredList.add(recipe);
-                }
+            // Log giá trị isApproved để kiểm tra
+            Log.d("DEBUG_APPROVAL", "Recipe ID: " + recipe.getId() + " | isApproved: " + recipe.getIsApproved());
+
+            if (status == null && recipe.getIsApproved() == null) {
+                filteredList.add(recipe);
+            } else if (status != null && status.equals(recipe.getIsApproved())) {
+                filteredList.add(recipe);
             }
         }
-
         adapter.notifyDataSetChanged();
     }
 
-    // ✅ SỬA 6: Thêm phương thức lấy danh sách từ database
+
     private List<Recipe> getRecipesFromDatabase() {
-        return dbHelper.getAllRecipesFull(); // <-- đảm bảo đã có hàm này trong KET_NOI_CSDL
+        return dbHelper.getAllRecipesFull();
     }
 
-    // ✅ SỬA 7: Thêm phương thức cập nhật trạng thái vào database
-    private void updateRecipeStatusInDatabase(Recipe recipe) {
-        dbHelper.updateRecipeStatus(recipe); // <-- đảm bảo đã có hàm này trong KET_NOI_CSDL
+    private void setSelectedButton(Button selectedButton) {
+        // Reset trạng thái tất cả nút
+        btnPending.setBackgroundColor(getResources().getColor(R.color.default_button_color));
+        btnAccepted.setBackgroundColor(getResources().getColor(R.color.default_button_color));
+        btnRejected.setBackgroundColor(getResources().getColor(R.color.default_button_color));
+
+        btnPending.setTextColor(getResources().getColor(R.color.black));
+        btnAccepted.setTextColor(getResources().getColor(R.color.black));
+        btnRejected.setTextColor(getResources().getColor(R.color.black));
+
+        // Nút được chọn
+        selectedButton.setBackgroundColor(getResources().getColor(R.color.selected_button_color));
+        selectedButton.setTextColor(getResources().getColor(R.color.white));
     }
 }

@@ -185,7 +185,16 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         return list;
     }
-
+    public String getUserNameById(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String userName = "Unknown";
+        Cursor cursor = db.rawQuery("SELECT UserName FROM Users WHERE UserID = ?", new String[]{String.valueOf(userId)});
+        if (cursor.moveToFirst()) {
+            userName = cursor.getString(0);
+        }
+        cursor.close();
+        return userName;
+    }
     @SuppressLint("Range")
     public ArrayList<Recipe> getAllRecipesFull() {
         ArrayList<Recipe> list = new ArrayList<>();
@@ -259,18 +268,18 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             values.put("userId", recipe.getUserId());
             values.put("imagePath", recipe.getImagePath());
             values.put("userImage", recipe.getUserImage());
-            values.put("isApproved", recipe.getIsApproved());
-            values.put("rejectReason", recipe.getRejectReason());
             values.put("updatedAt", recipe.getUpdatedAt());
             values.put("instructions", recipe.getInstructions());
             values.put("description", recipe.getDescription());
 
+            // Chỉ gọi put() 1 lần, kiểm tra isApproved null hay không
             if (recipe.getIsApproved() != null) {
                 values.put("isApproved", recipe.getIsApproved());
             } else {
                 values.putNull("isApproved");
             }
 
+            // Tương tự với rejectReason
             if (recipe.getRejectReason() != null) {
                 values.put("rejectReason", recipe.getRejectReason());
             } else {
@@ -286,6 +295,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         return result;
     }
+
 
     public int getOrCreateIngredientId(String name) {
         int id = -1;
@@ -461,10 +471,8 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             values.put("origin", recipe.getOrigin());         // dùng đúng tên cột
             values.put("type", recipe.getType());
             values.put("imagePath", recipe.getImagePath());
-
-
-
-            // Cập nhật công thức
+            values.put("isApproved", recipe.getIsApproved());
+   // Cập nhật công thức
             db.update("RecipeTable", values, "id = ?", new String[]{String.valueOf(recipe.getRecipeId())});
 
             // Xóa toàn bộ nguyên liệu cũ
@@ -589,8 +597,11 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
                 String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
                 String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
-                int isApproved = cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
-                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
+                int isApprovedIndex = cursor.getColumnIndexOrThrow("isApproved");
+                Integer isApproved = null;
+                if (!cursor.isNull(isApprovedIndex)) {
+                    isApproved = cursor.getInt(isApprovedIndex);
+                }                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
                 String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int countView = cursor.getInt(cursor.getColumnIndexOrThrow("countView"));
@@ -609,17 +620,34 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         ArrayList<Recipe> recipes = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        // Tách nguyên liệu bởi dấu phẩy và loại bỏ khoảng trắng dư
+        String[] ingredients = keyword.split(",");
+        for (int i = 0; i < ingredients.length; i++) {
+            ingredients[i] = ingredients[i].trim();
+        }
+
+        // Tạo chuỗi điều kiện LIKE động
+        StringBuilder whereClause = new StringBuilder();
+        ArrayList<String> argsList = new ArrayList<>();
+
+        for (int i = 0; i < ingredients.length; i++) {
+            if (i > 0) whereClause.append(" OR ");
+            whereClause.append("i.IngredientName LIKE ?");
+            argsList.add("%" + ingredients[i] + "%");
+        }
+
+        // SQL truy vấn
         String query =
                 "SELECT r.*, AVG(rt.RatingScore) as avgRating " +
                         "FROM RecipeTable r " +
                         "JOIN DetailRecipeIngredient dri ON r.id = dri.RecipeID " +
                         "JOIN Ingredients i ON dri.IngredientID = i.IngredientID " +
                         "LEFT JOIN Ratings rt ON r.id = rt.RecipeID " +
-                        "WHERE i.IngredientName LIKE ? AND r.isApproved = 1 " +
+                        "WHERE (" + whereClause + ") AND r.isApproved = 1 " +
                         "GROUP BY r.id " +
                         "ORDER BY avgRating DESC";
 
-        Cursor cursor = db.rawQuery(query, new String[]{"%" + keyword + "%"});
+        Cursor cursor = db.rawQuery(query, argsList.toArray(new String[0]));
 
         if (cursor.moveToFirst()) {
             do {
@@ -647,6 +675,8 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         cursor.close();
         return recipes;
     }
+
+
     public long insertRating(int recipeId, int userId, int ratingScore, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -758,32 +788,48 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         db.execSQL("UPDATE RecipeTable SET countView = countView + 1 WHERE id = ?", new Object[]{recipeId});
         db.close();
     }
-    public List<Recipe> getTopRecipes(int month, int year) {
-        List<Recipe> list = new ArrayList<>();
+    public ArrayList<Recipe> getTopRecipes(int month, int year) {
+        ArrayList<Recipe> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         String monthStr = String.format("%02d", month);
         String yearStr = String.valueOf(year);
 
-        String sql = "SELECT id, title, countView, updatedAt FROM RecipeTable " +
+        String sql = "SELECT * FROM RecipeTable " +
                 "WHERE strftime('%m', updatedAt) = ? AND strftime('%Y', updatedAt) = ? " +
                 "ORDER BY countView DESC LIMIT 20";
 
         Cursor cursor = db.rawQuery(sql, new String[]{monthStr, yearStr});
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
-                Recipe recipe = new Recipe();
-                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                recipe.setCountView(cursor.getInt(cursor.getColumnIndexOrThrow("countView")));
-                recipe.setUpdatedAt(cursor.getString(cursor.getColumnIndexOrThrow("updatedAt")));
+                int recipeId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
+                int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
+                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
+                int isApproved = cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
+                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
+                String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                int countView = cursor.getInt(cursor.getColumnIndexOrThrow("countView"));
+
+                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt,
+                        userId, imagePath, isApproved, rejectReason, instructions,
+                        description, countView);
+
                 list.add(recipe);
             } while (cursor.moveToNext());
+
+            cursor.close();
         }
-        cursor.close();
         db.close();
         return list;
     }
+
 
     // Kiểm tra đã yêu thích chưa
     public boolean isRecipeFavourited(int userId, int recipeId) {

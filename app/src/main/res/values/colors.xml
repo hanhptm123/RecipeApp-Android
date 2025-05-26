@@ -6,5 +6,8 @@
     <color name="green_inactive">#A5D6A7</color> <!-- màu nhạt hơn -->
     <color name="red_active">#F44336</color>
     <color name="red_inactive">#EF9A9A</color> <!-- màu nhạt hơn -->
+    <color name="default_button_color">#E0E0E0</color> <!-- màu xám nhạt -->
+    <color name="selected_button_color">#4CAF50</color> <!-- màu xanh -->
+    <color name="darker_gray">#A9A9A9</color> <!-- hoặc tùy chỉnh mã màu đậm hơn nếu muốn -->
 
 </resources>
