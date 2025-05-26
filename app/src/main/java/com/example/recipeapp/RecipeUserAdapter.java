@@ -77,11 +77,11 @@ public class RecipeUserAdapter extends RecyclerView.Adapter<RecipeUserAdapter.Re
         if (imagePath != null && !imagePath.isEmpty()) {
             Glide.with(context)
                     .load(imagePath)
-                    .placeholder(R.drawable.pho)
-                    .error(R.drawable.pho)
+                    .placeholder(R.drawable.auto)
+                    .error(R.drawable.auto)
                     .into(holder.imgRecipe);
         } else {
-            holder.imgRecipe.setImageResource(R.drawable.pho);
+            holder.imgRecipe.setImageResource(R.drawable.auto);
         }
 
 

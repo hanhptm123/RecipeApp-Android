@@ -58,10 +58,10 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
                 int imageResId = Integer.parseInt(recipe.getImagePath());
                 holder.imgRecipe.setImageResource(imageResId);
             } catch (NumberFormatException e) {
-                holder.imgRecipe.setImageResource(R.drawable.pho); // ảnh mặc định nếu không parse được
+                holder.imgRecipe.setImageResource(R.drawable.auto); // ảnh mặc định nếu không parse được
             }
         } else {
-            holder.imgRecipe.setImageResource(R.drawable.pho); // ảnh mặc định nếu null hoặc rỗng
+            holder.imgRecipe.setImageResource(R.drawable.auto); // ảnh mặc định nếu null hoặc rỗng
         }
 
 
