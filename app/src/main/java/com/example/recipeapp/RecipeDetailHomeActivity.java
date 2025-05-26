@@ -162,11 +162,11 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
         if (imagePath != null && !imagePath.isEmpty()) {
             Glide.with(this)
                     .load(Uri.fromFile(new File(imagePath)))
-                    .placeholder(R.drawable.chebamau)
-                    .error(R.drawable.chebamau)
+                    .placeholder(R.drawable.auto)
+                    .error(R.drawable.auto)
                     .into(imageRecipe);
         } else {
-            imageRecipe.setImageResource(R.drawable.chebamau);
+            imageRecipe.setImageResource(R.drawable.auto);
         }
 }
 

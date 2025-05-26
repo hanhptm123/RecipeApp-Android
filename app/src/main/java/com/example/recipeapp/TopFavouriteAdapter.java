@@ -53,7 +53,7 @@ public class TopFavouriteAdapter extends RecyclerView.Adapter<TopFavouriteAdapte
         // Load ảnh
         Glide.with(context)
                 .load(recipe.getImagePath())
-                .placeholder(R.drawable.pho)
+                .placeholder(R.drawable.auto)
                 .into(holder.imgRecipe);
 
         // Sự kiện click item

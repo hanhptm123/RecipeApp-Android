@@ -102,15 +102,15 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
                 if (bitmap != null) {
                     holder.imgRecipe.setImageBitmap(bitmap);
                 } else {
-                    holder.imgRecipe.setImageResource(R.drawable.pho);
+                    holder.imgRecipe.setImageResource(R.drawable.auto);
                 }
                 if (inputStream != null) inputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                holder.imgRecipe.setImageResource(R.drawable.pho);
+                holder.imgRecipe.setImageResource(R.drawable.auto);
             }
         } else {
-            holder.imgRecipe.setImageResource(R.drawable.pho);
+            holder.imgRecipe.setImageResource(R.drawable.auto);
         }
 
         holder.btnFavorite.setImageResource(R.drawable.heart_color);
