@@ -68,11 +68,26 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Log.d("RECIPE_USER", "recipe.getUserId(): " + recipe.getUserId());
             Log.d("CURRENT_USER", "currentUserId: " + currentUserId);
 
-            // Handle rating/comment
-            boolean isOwner = (currentUserId == recipe.getUserId());
-            boolean hasRatedOrCommented = db.hasUserRated(currentRecipeId, currentUserId) || db.hasUserCommented(currentRecipeId, currentUserId);
+            boolean isLoggedIn = (currentUserId != -1);
+            boolean isOwner = (isLoggedIn && currentUserId == recipe.getUserId());
+            boolean hasRated = false;
+            boolean hasCommented = false;
+            if (isLoggedIn) {
+                hasRated = db.hasUserRated(currentRecipeId, currentUserId);
+                hasCommented = db.hasUserCommented(currentRecipeId, currentUserId);
+            }
+            boolean hasRatedOrCommented = isLoggedIn && (hasRated || hasCommented);
 
-            commentSection.setVisibility((isOwner || hasRatedOrCommented) ? View.GONE : View.VISIBLE);
+            Log.d("DEBUG", "isLoggedIn=" + isLoggedIn + ", isOwner=" + isOwner + ", hasRated=" + hasRated + ", hasCommented=" + hasCommented);
+
+            if (!isLoggedIn || isOwner || hasRatedOrCommented) {
+                commentSection.setVisibility(View.GONE);
+                Log.d("DEBUG", "Comment section GONE");
+            } else {
+                commentSection.setVisibility(View.VISIBLE);
+                Log.d("DEBUG", "Comment section VISIBLE");
+            }
+
 
             btnSubmitRating.setOnClickListener(v -> submitRating());
 
