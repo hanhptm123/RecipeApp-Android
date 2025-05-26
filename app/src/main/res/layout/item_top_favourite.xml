@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_margin="8dp"
+    android:background="@android:color/white"
+    android:elevation="4dp"
+    android:clipToPadding="false">
+
+    <ImageView
+        android:id="@+id/imgRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Ảnh món ăn" />
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên món ăn"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:paddingTop="8dp" />
+
+    <!-- Thêm loại, xuất xứ, tên người đăng -->
+    <TextView
+        android:id="@+id/txtType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loại: Món ăn"
+        android:textSize="14sp"
+        android:textColor="#444444"
+        android:paddingTop="2dp" />
+
+    <TextView
+        android:id="@+id/txtOrigin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xuất xứ: Việt Nam"
+        android:textSize="14sp"
+        android:textColor="#444444"
+        android:paddingTop="2dp" />
+
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mô tả ngắn..."
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:paddingTop="4dp" />
+
+    <TextView
+        android:id="@+id/txtFavouriteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="❤ 123 lượt yêu thích"
+        android:textColor="#D81B60"
+        android:textSize="14sp"
+        android:paddingTop="4dp" />
+
+</LinearLayout>
