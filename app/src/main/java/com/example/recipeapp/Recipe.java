@@ -24,9 +24,8 @@ import java.util.ArrayList;
 
         private String instructions; // Hướng dẫn nấu ăn
         private int countView; // Thêm biến này để lưu số lượt xem
-
-
         private String description;
+        private int totalFavourites;
         // Constructor đầy đủ (bổ sung instructions và updatedAt)
         public Recipe(int id, String title, String time, String type, String origin,
                       String date, String updatedAt, int userId, String imagePath,
@@ -199,7 +198,35 @@ import java.util.ArrayList;
 ////            return -1; // nếu user null
 ////        }
 
+ //Constructor đơn giản cho Top Favourite Recipe
+// Constructor đơn giản cho top favourite recipes
 
+        public Recipe(int id, String title, String imagePath, String description, int totalFavourites) {
+            this.recipeId = id;
+            this.title = title;
+            this.imagePath = imagePath;
+            this.description = description;
+            this.totalFavourites = totalFavourites;
+        }
+
+        public int getTotalFavourites() {
+            return totalFavourites;
+        }
+
+        public void setTotalFavourites(int totalFavourites) {
+            this.totalFavourites = totalFavourites;
+        }
+
+
+        private String userName;
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
 
     }
 

@@ -72,7 +72,15 @@ public class User_home_page extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ImageButton btnTopFavourite = findViewById(R.id.topFavouriteIcon);
 
+        btnTopFavourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(User_home_page.this, TopFavouriteRecipesActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }

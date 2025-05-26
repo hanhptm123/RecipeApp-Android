@@ -49,6 +49,7 @@
         <activity android:name=".TopRecipeActivity"/>
         <activity android:name="com.example.recipeapp.Favourite_list" />
         <activity android:name="com.example.recipeapp.RecipeDetailHomeActivity" />
+        <activity android:name="com.example.recipeapp.TopFavouriteRecipesActivity" />
     </application>
 
 </manifest>
