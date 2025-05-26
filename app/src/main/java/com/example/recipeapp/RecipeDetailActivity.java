@@ -183,7 +183,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
         textType.setText("Loại: " + recipe.getType());
         textOrigin.setText("Xuất xứ: " + recipe.getOrigin());
         textDate.setText("Ngày đăng: " + recipe.getDate());
-        textUser.setText("Người đăng: " + recipe.getUserId());
+        String username = db.getUsernameByUserId(recipe.getUserId());
+        Log.d("DEBUG_USERNAME", "Username: " + username);
+
+        textUser.setText("Người đăng: " + username);
+
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
 

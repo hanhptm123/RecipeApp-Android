@@ -16,7 +16,7 @@ import java.util.List;
 
 public class KET_NOI_CSDL extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipeDB.db";
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     public KET_NOI_CSDL(@Nullable Context context, String s, Object o, int i) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -58,7 +58,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "type TEXT, " +
                 "origin TEXT, " +
                 "date TEXT, " +
-                "userId TEXT, " +
+                "userId INTEGER, " +
                 "imagePath TEXT," +
                 "isApproved INTEGER," +
                 "updatedAt TEXT," +
@@ -90,9 +90,12 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Favourites (" +
                 "FavouriteID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "UserID INTEGER, " +
-                "RecipeID INTEGER, " +
-                "FOREIGN KEY(RecipeID) REFERENCES Recipes(RecipeID))");
+                "UserID INTEGER NOT NULL, " +
+                "RecipeID INTEGER NOT NULL, " +
+                "FOREIGN KEY(UserID) REFERENCES Users(UserID) ON DELETE CASCADE, " +
+                "FOREIGN KEY(RecipeID) REFERENCES RecipeTable(id) ON DELETE CASCADE)");
+
+
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Users (" +
                 "UserID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -792,13 +795,21 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         return exists;
     }
 
-    // Thêm yêu thích
-    public void addFavourite(int userId, int recipeId) {
+    // Thêm yêu thích (có kiểm tra tồn tại User & Recipe)
+    public boolean addFavourite(int userId, int recipeId) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // Kiểm tra User và Recipe có tồn tại không
+        if (!doesUserExist(userId) || !doesRecipeExist(recipeId)) {
+            Log.e("DB_ERROR", "UserID hoặc RecipeID không tồn tại.");
+            return false;
+        }
+
         ContentValues values = new ContentValues();
         values.put("UserID", userId);
         values.put("RecipeID", recipeId);
-        db.insert("Favourites", null, values);
+        long result = db.insert("Favourites", null, values);
+        return result != -1;
     }
 
     // Xoá yêu thích
@@ -808,11 +819,12 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 new String[]{String.valueOf(userId), String.valueOf(recipeId)});
     }
 
+    // Lấy danh sách món yêu thích của user
     public ArrayList<Recipe> getFavouriteRecipesByUserId(int userId) {
         ArrayList<Recipe> favouriteRecipes = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT r.* FROM RecipeTable r " +
+        String query = "SELECT r.* FROM RecipeTable r " +  // Sử dụng đúng bảng RecipeTable
                 "INNER JOIN Favourites f ON r.id = f.RecipeID " +
                 "WHERE f.UserID = ?";
 
@@ -828,7 +840,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
                 String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
-                userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
+                int recipeUserId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
                 String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
                 Integer isApproved = cursor.isNull(cursor.getColumnIndexOrThrow("isApproved")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
                 String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
@@ -836,7 +848,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 int countView = cursor.getInt(cursor.getColumnIndexOrThrow("countView"));
 
-                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, userId,
+                Recipe recipe = new Recipe(recipeId, title, time, type, origin, date, updatedAt, recipeUserId,
                         imagePath, isApproved, rejectReason, instructions, description, countView);
 
                 favouriteRecipes.add(recipe);
@@ -847,6 +859,26 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         return favouriteRecipes;
     }
+
+    // Kiểm tra user tồn tại
+    public boolean doesUserExist(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT UserID FROM Users WHERE UserID = ?", new String[]{String.valueOf(userId)});
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        return exists;
+    }
+
+    // Kiểm tra recipe tồn tại (dùng bảng RecipeTable)
+    public boolean doesRecipeExist(int recipeId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ID FROM RecipeTable WHERE ID = ?", new String[]{String.valueOf(recipeId)});
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        return exists;
+    }
+
+
     public boolean deleteRecipe(int recipeId) {
         SQLiteDatabase dbWritable = this.getWritableDatabase();
         try {
@@ -863,4 +895,17 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
             return false;
         }
     }
+
+
+    @SuppressLint("Range")
+    public String getUsernameByUserId(int userId) {
+        String username = "Unknown";
+        Cursor cursor = this.Doc_bang("SELECT Username FROM Users WHERE UserID = " + userId);
+        if (cursor != null && cursor.moveToFirst()) {
+            username = cursor.getString(cursor.getColumnIndex("UserName"));
+            cursor.close();
+        }
+        return username;
+    }
+
 }
