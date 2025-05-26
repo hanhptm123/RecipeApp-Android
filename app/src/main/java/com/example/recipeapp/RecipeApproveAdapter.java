@@ -9,6 +9,8 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,25 +39,25 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
 
         holder.tvRecipeTitle.setText(recipe.getTitle());
 
-        // ✅ Hiển thị tên người dùng từ DB
+        // Hiển thị tên người dùng từ DB
         String userName = dbHelper.getUserNameById(recipe.getUserId());
         holder.tvRecipeUser.setText("By: " + userName);
 
         holder.tvRecipeDate.setText(recipe.getDate());
 
-        // ✅ Hiển thị ảnh nếu có
-        if (recipe.getImagePath() != null && !recipe.getImagePath().isEmpty()) {
-            try {
-                int imageResId = Integer.parseInt(recipe.getImagePath());
-                holder.imgRecipe.setImageResource(imageResId);
-            } catch (NumberFormatException e) {
-                holder.imgRecipe.setImageResource(R.drawable.auto);
-            }
+        // Load ảnh món ăn bằng Glide (như RecipeAdapter)
+        String imagePath = recipe.getImagePath();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Glide.with(context)
+                    .load(imagePath)
+                    .placeholder(R.drawable.auto)
+                    .error(R.drawable.auto)
+                    .into(holder.imgRecipe);
         } else {
             holder.imgRecipe.setImageResource(R.drawable.auto);
         }
 
-        // ✅ Reset UI
+        // Reset UI trạng thái
         holder.llButtons.setVisibility(View.GONE);
         holder.tvApprovedStatus.setVisibility(View.GONE);
         holder.tvRejectReason.setVisibility(View.GONE);
@@ -77,7 +79,7 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
             holder.tvRejectReason.setText("Từ chối: " + recipe.getRejectReason());
         }
 
-        // ✅ Duyệt
+        // Xử lý duyệt
         holder.btnApprove.setOnClickListener(v -> {
             recipe.setIsApproved(1);
             recipe.setRejectReason("");
@@ -85,12 +87,13 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
             notifyDataSetChanged();
         });
 
-        // ✅ Từ chối (hiện lý do)
+        // Xử lý từ chối (hiện input lý do)
         holder.btnReject.setOnClickListener(v -> {
             holder.etRejectReasonInput.setVisibility(View.VISIBLE);
             holder.btnConfirmReject.setVisibility(View.VISIBLE);
         });
 
+        // Xác nhận từ chối với lý do
         holder.btnConfirmReject.setOnClickListener(v -> {
             String reason = holder.etRejectReasonInput.getText().toString().trim();
             if (reason.isEmpty()) {
@@ -103,7 +106,7 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
             notifyDataSetChanged();
         });
 
-        // ✅ Xem chi tiết qua Intent
+        // Xem chi tiết qua Intent
         holder.btnView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RecipeDetailActivity.class);
             intent.putExtra("recipe", recipe);

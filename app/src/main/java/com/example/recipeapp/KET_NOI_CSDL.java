@@ -213,14 +213,21 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
                 String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
                 String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
+
                 int index = cursor.getColumnIndex("isApproved");
                 Integer isApproved = cursor.isNull(index) ? null : cursor.getInt(index);
+
                 String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
 
+                Recipe recipe = new Recipe(1, title, time, type, origin, date, updatedAt, userId, imagePath, isApproved, rejectReason, instructions, description, 0);
 
-                Recipe recipe = new Recipe(1,title, time, type, origin, date, updatedAt, userId, imagePath, isApproved, rejectReason, instructions, description, 0);               
-                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndex("id")));
+                // Gán lại id
+                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+
+                // Lấy và gán userImage giống searchRecipesByName
+                recipe.userImage = cursor.getInt(cursor.getColumnIndexOrThrow("userImage"));
+
                 list.add(recipe);
             } while (cursor.moveToNext());
 
@@ -229,6 +236,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         return list;
     }
+
 
     public void updateRecipeStatus(Recipe recipe) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -406,13 +414,14 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         return db.insert("DetailRecipeIngredient", null, values);
     }
     public ArrayList<Recipe> searchRecipesByName(String keyword) {
-        ArrayList<Recipe> list = new ArrayList<>();
+        ArrayList<Recipe> recipes = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+
         Cursor cursor = db.rawQuery(
                 "SELECT r.*, AVG(rt.RatingScore) as avgRating " +
                         "FROM RecipeTable r " +
                         "LEFT JOIN Ratings rt ON r.id = rt.RecipeID " +
-                        "WHERE r.title LIKE ? " +
+                        "WHERE r.title LIKE ? AND r.isApproved = 1 " +
                         "GROUP BY r.id " +
                         "ORDER BY avgRating DESC",
                 new String[]{"%" + keyword + "%"}
@@ -420,16 +429,31 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Recipe recipe = new Recipe();
-                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                // Thêm các trường khác nếu cần
-                list.add(recipe);
+                Recipe recipe = new Recipe(
+                        cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("time")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("type")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("origin")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("date")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("updatedAt")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("userId")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("imagePath")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("isApproved")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("rejectReason")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("instructions")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("countView"))
+                );
+                recipe.userImage = cursor.getInt(cursor.getColumnIndexOrThrow("userImage"));
+                recipes.add(recipe);
             } while (cursor.moveToNext());
         }
+
         cursor.close();
-        return list;
+        return recipes;
     }
+
     public List<Recipe> searchRecipesByType(String type) {
         List<Recipe> recipes = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -437,7 +461,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
                 "SELECT r.*, AVG(rt.RatingScore) as avgRating " +
                         "FROM RecipeTable r " +
                         "LEFT JOIN Ratings rt ON r.id = rt.RecipeID " +
-                        "WHERE r.type = ? " +
+                        "WHERE r.type = ? AND r.isApproved = 1 " +
                         "GROUP BY r.id " +
                         "ORDER BY avgRating DESC",
                 new String[]{type}
@@ -445,14 +469,27 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Recipe recipe = new Recipe();
-                recipe.setRecipeId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                recipe.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                recipe.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
-                // Thêm các trường khác nếu cần
+                Recipe recipe = new Recipe(
+                        cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("time")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("type")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("origin")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("date")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("updatedAt")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("userId")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("imagePath")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("isApproved")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("rejectReason")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("instructions")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("countView"))
+                );
+                recipe.userImage = cursor.getInt(cursor.getColumnIndexOrThrow("userImage"));
                 recipes.add(recipe);
             } while (cursor.moveToNext());
         }
+
         cursor.close();
         return recipes;
     }
