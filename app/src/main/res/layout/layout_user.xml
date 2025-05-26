@@ -38,7 +38,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="text"
-            android:text="Name Recipe" />
+            android:hint="Name Recipe" />
 
         <ImageButton
             android:id="@+id/btnsearch_user"

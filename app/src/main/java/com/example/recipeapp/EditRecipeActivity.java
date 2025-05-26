@@ -220,6 +220,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         }
 
         // Cập nhật database
+        recipe.setIsApproved(null);
         boolean success = db.updateRecipeAndIngredients(recipe, updatedIngredients);
         if (success) {
             Toast.makeText(this, "Cập nhật công thức thành công", Toast.LENGTH_SHORT).show();

@@ -2,19 +2,15 @@ package com.example.recipeapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.io.File;
 
 import java.util.ArrayList;
 
@@ -23,15 +19,13 @@ public class MyRecipesFragment extends Fragment implements RecipeUserAdapter.OnR
     private RecyclerView recyclerView;
     private RecipeUserAdapter recipeUserAdapter;
     private KET_NOI_CSDL db;
-    private ArrayList<Recipe> userRecipes;
-    private ArrayList<Recipe> filteredRecipes;
-    private int userId;
+    private ArrayList<Recipe> displayedRecipes = new ArrayList<>();
 
-    private Button btnPending, btnAccepted, btnRejected;
     private static final int REQUEST_CODE_DETAIL = 1000;
 
     public MyRecipesFragment() {}
 
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -42,51 +36,20 @@ public class MyRecipesFragment extends Fragment implements RecipeUserAdapter.OnR
 
         db = new KET_NOI_CSDL(getContext());
 
-        Bundle args = getArguments();
-        if (args != null) {
-            userId = args.getInt("userId", -1);
-        }
-
-        userRecipes = db.getRecipesByUserId(userId);
-        filteredRecipes = new ArrayList<>();
-
-        Log.d("MyRecipesFragment", "userId = " + userId);
-        Log.d("MyRecipesFragment", "Số công thức: " + userRecipes.size());
-
-        recipeUserAdapter = new RecipeUserAdapter(getContext(), filteredRecipes, db);
+        recipeUserAdapter = new RecipeUserAdapter(getContext(), displayedRecipes, db);
         recipeUserAdapter.setOnRecipeClickListener(this);
         recyclerView.setAdapter(recipeUserAdapter);
-
-        btnPending = view.findViewById(R.id.btnPending);
-        btnAccepted = view.findViewById(R.id.btnAccepted);
-        btnRejected = view.findViewById(R.id.btnRejected);
-
-        btnPending.setOnClickListener(v -> filterRecipes(null));
-        btnAccepted.setOnClickListener(v -> filterRecipes(1));
-        btnRejected.setOnClickListener(v -> filterRecipes(0));
-
-        // Mặc định hiển thị các công thức đang chờ duyệt
-        filterRecipes(null);
 
         return view;
     }
 
-    private void filterRecipes(Integer status) {
-        filteredRecipes.clear();
-        for (Recipe r : userRecipes) {
-            if (status == null && r.getIsApproved() == null) {
-                filteredRecipes.add(r);
-            } else if (status != null && status.equals(r.getIsApproved())) {
-                filteredRecipes.add(r);
-            }
+    // Phương thức để Activity truyền danh sách đã lọc vào Fragment
+    public void updateRecipeList(ArrayList<Recipe> recipes) {
+        displayedRecipes.clear();
+        displayedRecipes.addAll(recipes);
+        if (recipeUserAdapter != null) {
+            recipeUserAdapter.notifyDataSetChanged();
         }
-        recipeUserAdapter.notifyDataSetChanged();
-    }
-
-    public void loadRecipeList() {
-        userRecipes.clear();
-        userRecipes.addAll(db.getRecipesByUserId(userId));
-        filterRecipes(null); // làm mới theo bộ lọc mặc định
     }
 
     @Override
@@ -98,16 +61,8 @@ public class MyRecipesFragment extends Fragment implements RecipeUserAdapter.OnR
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        loadRecipeList();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_DETAIL && resultCode == getActivity().RESULT_OK) {
-            loadRecipeList();
-        }
+        // Việc load lại danh sách giờ do Activity xử lý nên không cần gọi gì ở đây
     }
 }

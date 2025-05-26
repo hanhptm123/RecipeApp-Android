@@ -44,7 +44,7 @@ public class searchRecipesByIngredient  extends AppCompatActivity {
         btnSearch.setOnClickListener(v -> {
             String keyword = etIngredients.getText().toString().trim();
             if (keyword.isEmpty()) {
-                Toast.makeText(this, "Please enter an ingredient", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Enter ingredients separated by commas, e.g., egg, milk, sugar", Toast.LENGTH_LONG).show();
                 return;
             }
             searchRecipes(keyword);

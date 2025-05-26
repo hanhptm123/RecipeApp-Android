@@ -3,7 +3,42 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <!-- Nhóm nút Pending / Accept / Cancel -->
+    <LinearLayout
+        android:id="@+id/btnFilterGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="12dp">
 
+        <Button
+            android:id="@+id/btnPending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#6C8E3E" />
+
+        <Button
+            android:id="@+id/btnAccepted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accepted"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#388E3C"
+            android:layout_marginStart="8dp" />
+
+        <Button
+            android:id="@+id/btnRejected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rejected"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#D32F2F"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
     <!-- Fragment container -->
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -12,6 +47,7 @@
         android:layout_weight="1" />
 
     <!-- Action Button -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

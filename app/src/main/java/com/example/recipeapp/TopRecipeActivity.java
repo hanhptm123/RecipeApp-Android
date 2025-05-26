@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class TopRecipeActivity extends AppCompatActivity {
 
     private RecyclerView rvTopRecipes;
-    private RecipeAdapter recipeAdapter;
+    private TopRecipeAdapter recipeAdapter;
     private KET_NOI_CSDL dbHelper;
 
     private Spinner spinnerMonth;
@@ -36,6 +37,8 @@ public class TopRecipeActivity extends AppCompatActivity {
         etYear = findViewById(R.id.etYear);
         btnFilter = findViewById(R.id.btnFilter);
         rvTopRecipes.setLayoutManager(new LinearLayoutManager(this));
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         dbHelper = new KET_NOI_CSDL(this);
 
@@ -76,7 +79,7 @@ public class TopRecipeActivity extends AppCompatActivity {
         List<Recipe> topRecipes = dbHelper.getTopRecipes(month, year);
 
         if (recipeAdapter == null) {
-            recipeAdapter = new RecipeAdapter(this, topRecipes, dbHelper);
+            recipeAdapter = new TopRecipeAdapter(this, topRecipes, dbHelper);
             rvTopRecipes.setAdapter(recipeAdapter);
         } else {
             recipeAdapter.updateData(topRecipes); // Giả sử bạn có method updateData trong adapter để cập nhật lại danh sách

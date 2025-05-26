@@ -144,7 +144,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                     description,
                     0
             );
-
+            recipe.setIsApproved(null);
+            recipe.setRejectReason(null);
             long recipeId = dbHelper.insertRecipe(recipe);
             if (recipeId == -1) {
                 Toast.makeText(this, "Thêm công thức thất bại!", Toast.LENGTH_SHORT).show();
