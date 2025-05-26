@@ -4,7 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F1F8E9"> <!-- Light green background -->
+    android:background="#F1F8E9">
+
+    <!-- phần còn lại như bạn gửi -->
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,6 +15,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Hình ảnh món ăn -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -26,146 +30,135 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/chebamau"
                 android:adjustViewBounds="true"
-                android:contentDescription="@string/recipe_image"
-                android:clipToOutline="true"
-                android:background="@drawable/rounded_image_background" />
-
+                android:contentDescription="@string/recipe_image" />
         </androidx.cardview.widget.CardView>
 
+        <!-- Lượt xem -->
         <TextView
             android:id="@+id/text_count_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lượt xem: 0"
-            android:textSize="14sp"
             android:textColor="#666666"
-            android:layout_marginTop="20dp"
-            app:layout_constraintTop_toBottomOf="@id/image_recipe"
-            app:layout_constraintStart_toStartOf="parent" />
-        <!-- Recipe Title -->
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Tiêu đề -->
         <TextView
             android:id="@+id/text_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Recipe Title"
             android:textSize="24sp"
-            android:textStyle="bold"
             android:textColor="#2E7D32"
+            android:textStyle="bold"
             android:paddingBottom="8dp" />
 
-        <!-- Additional Info -->
+        <!-- Thông tin thêm -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="12dp"
-            android:divider="?android:attr/dividerVertical"
-            android:showDividers="middle">
+            android:showDividers="middle"
+            android:divider="?android:attr/dividerVertical">
 
-            <TextView
-                android:id="@+id/text_time"
+            <TextView android:id="@+id/text_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="⏱ Time: 30 minutes"
                 android:textColor="#558B2F" />
 
-            <TextView
-                android:id="@+id/text_type"
+            <TextView android:id="@+id/text_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="🍲 Type: Main Dish"
                 android:textColor="#558B2F" />
 
-            <TextView
-                android:id="@+id/text_origin"
+            <TextView android:id="@+id/text_origin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="📍 Origin: Vietnam"
                 android:textColor="#558B2F" />
 
-            <TextView
-                android:id="@+id/text_date"
+            <TextView android:id="@+id/text_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="🗓 Date Posted: 21/05/2025"
                 android:textColor="#558B2F" />
 
-            <TextView
-                android:id="@+id/text_user"
+            <TextView android:id="@+id/text_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="👤 Posted By: admin"
                 android:textColor="#558B2F" />
         </LinearLayout>
 
-        <!-- Description -->
+        <!-- Mô tả -->
         <TextView
             android:id="@+id/text_description_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="📌 Description"
-            android:textStyle="bold"
             android:textSize="18sp"
-            android:layout_marginTop="12dp"
-            android:textColor="#33691E" />
+            android:textColor="#33691E"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="This is a traditional three-color sweet soup..."
-            android:layout_marginTop="4dp"
-            android:textColor="#424242" />
+            android:textColor="#424242"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Ingredients -->
+        <!-- Nguyên liệu -->
         <TextView
             android:id="@+id/text_ingredient_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="🧂 Ingredients"
-            android:textStyle="bold"
             android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            android:textColor="#33691E" />
+            android:textColor="#33691E"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
 
         <LinearLayout
             android:id="@+id/ingredients_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Instructions -->
+        <!-- Hướng dẫn -->
         <TextView
             android:id="@+id/text_instruction_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="👨‍🍳 Cooking Instructions"
-            android:textStyle="bold"
             android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            android:textColor="#33691E" />
+            android:textColor="#33691E"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
 
         <TextView
             android:id="@+id/text_instruction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Step 1: Clean the ingredients..."
-            android:layout_marginTop="4dp"
-            android:padding="12dp"
             android:background="#DCEDC8"
-            android:textColor="#424242"
+            android:text="Step 1: Clean the ingredients..."
             android:textSize="15sp"
-            android:lineSpacingExtra="4dp"
-            android:overScrollMode="ifContentScrolls" />
+            android:textColor="#424242"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Action Buttons -->
+        <!-- Nút hành động -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="24dp"
             android:gravity="center"
+            android:layout_marginTop="16dp"
             android:weightSum="3">
 
             <Button
@@ -173,7 +166,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="4dp"
                 android:text="⬅ Go Back"
                 android:backgroundTint="#A5D6A7"
                 android:textColor="#1B5E20" />
@@ -183,27 +175,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
                 android:text="✏️ Edit"
                 android:backgroundTint="#66BB6A"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnDelete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
                 android:text="🗑 Delete"
                 android:backgroundTint="#EF9A9A"
                 android:textColor="#B71C1C" />
-
         </LinearLayout>
+
         <!-- Đánh giá và bình luận -->
         <TextView
             android:id="@+id/text_comment_label"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Comment And Rating"
             android:textSize="20sp"
@@ -212,101 +203,76 @@
             android:gravity="center"
             android:padding="12dp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/btn_go_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginTop="24dp" />
 
         <LinearLayout
             android:id="@+id/comment_section"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#F7FFF0"
             android:padding="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_gravity="center_horizontal"
-            android:backgroundTint="#F7FFF0"
-            android:elevation="2dp"
-            android:clipToPadding="false"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/text_comment_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:elevation="2dp">
 
-            <!-- Ảnh avatar -->
             <LinearLayout
                 android:id="@+id/rating_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="8dp"
-                android:paddingHorizontal="16dp">
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:id="@+id/rating_avatar_image"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:scaleType="centerCrop"
-                    android:background="@android:color/white"
                     android:src="@drawable/chebamau"
-                    android:clipToOutline="true"
-                    android:outlineProvider="background" />
-
+                    android:background="@android:color/white"
+                    android:clipToOutline="true" />
 
                 <RatingBar
                     android:id="@+id/rating_bar"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:numStars="5"
                     android:stepSize="1"
                     android:isIndicator="false"
                     android:layout_marginStart="16dp" />
-
             </LinearLayout>
 
-            <!-- Nhập bình luận -->
             <EditText
                 android:id="@+id/rating_edit_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Please write your comment here........."
-                android:background="@drawable/rounded_edittext"
+                android:hint="Please write your comment here..."
                 android:minHeight="80dp"
                 android:gravity="top|start"
                 android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_edittext" />
 
-            <!-- Nút gửi đánh giá -->
             <Button
                 android:id="@+id/rating_btn_submit_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Submit"
-                android:textStyle="bold"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="#D7FFAA"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp" />
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Average Rating + Filter Section Container -->
+        <!-- Tóm tắt đánh giá -->
         <LinearLayout
             android:id="@+id/average_filter_container"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#F7FFF0"
             android:padding="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/comment_section"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_marginTop="16dp">
 
-            <!-- Average Rating Text -->
             <TextView
                 android:id="@+id/rating_summary"
                 android:layout_width="wrap_content"
@@ -316,13 +282,12 @@
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal" />
 
-            <!-- Rating Bar and Rating Count Row -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp">
 
                 <RatingBar
                     android:id="@+id/rating_average"
@@ -342,94 +307,94 @@
                     android:layout_gravity="center_vertical" />
             </LinearLayout>
 
-            <!-- Filter Buttons -->
+            <!-- Filter -->
             <LinearLayout
                 android:id="@+id/filter_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:paddingHorizontal="8dp">
+                android:layout_marginTop="16dp">
 
-                <Button
-                    android:id="@+id/button_all"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="All"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:padding="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/button_border_yellow" />
 
-                <Button
-                    android:id="@+id/button_5_star"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="5★"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:padding="4dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:background="@drawable/button_border_yellow" />
+                    <Button
+                        android:id="@+id/button_all"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="All"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:padding="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/button_border_yellow" />
 
-                <Button
-                    android:id="@+id/button_4_star"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="4★"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:padding="4dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:background="@drawable/button_border_yellow" />
+                    <Button
+                        android:id="@+id/button_5_star"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="5★"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:padding="4dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:background="@drawable/button_border_yellow" />
 
-                <Button
-                    android:id="@+id/button_3_star"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="3★"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:padding="4dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:background="@drawable/button_border_yellow" />
+                    <Button
+                        android:id="@+id/button_4_star"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="4★"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:padding="4dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:background="@drawable/button_border_yellow" />
 
-                <Button
-                    android:id="@+id/button_2_star"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2★"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:padding="4dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:background="@drawable/button_border_yellow" />
+                    <Button
+                        android:id="@+id/button_3_star"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="3★"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:padding="4dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:background="@drawable/button_border_yellow" />
 
-                <Button
-                    android:id="@+id/button_1_star"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1★"
-                    android:textColor="#FFD700"
-                    android:textSize="12sp"
-                    android:padding="4dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/button_border_yellow" />
+                    <Button
+                        android:id="@+id/button_2_star"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="2★"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:padding="4dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:background="@drawable/button_border_yellow" />
+
+                    <Button
+                        android:id="@+id/button_1_star"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1★"
+                        android:textColor="#FFD700"
+                        android:textSize="12sp"
+                        android:padding="4dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/button_border_yellow" />
+
             </LinearLayout>
         </LinearLayout>
 
-
-        <!-- Danh sách đánh giá (RecyclerView) -->
+        <!-- Danh sách đánh giá -->
         <TextView
             android:id="@+id/text_list_comment_label"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ratings List"
             android:textSize="20sp"
@@ -438,36 +403,15 @@
             android:gravity="center"
             android:padding="12dp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/average_filter_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginTop="16dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_comments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="true"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/text_list_comment_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-        <!-- Footer -->
-
-        <TextView
-            android:id="@+id/footer_rating"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#B9EC7F"
-            android:text="© 2025 Recipe App"
-            android:gravity="center"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/recycler_comments"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
+
 </ScrollView>

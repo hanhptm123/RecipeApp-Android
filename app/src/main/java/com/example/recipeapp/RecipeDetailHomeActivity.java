@@ -33,7 +33,7 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
     private Recipe recipe;
     private ArrayList<DetailRecipeIngredient> detailIngredients;
     private List<Rating> allComments = new ArrayList<>();
-    private CommentAdapter commentAdapter;
+    private HomeCommentAdapter commentAdapter;
 
     private int currentUserId, currentRecipeId;
 
@@ -64,11 +64,25 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
             textCountView.setText("Lượt xem: " + recipe.getCountView());
 
 
-            // Xử lý rating/comment
-            boolean isOwner = (currentUserId == recipe.getUserId());
-            boolean hasRatedOrCommented = db.hasUserRated(currentRecipeId, currentUserId) || db.hasUserCommented(currentRecipeId, currentUserId);
+            boolean isLoggedIn = (currentUserId != -1);
+            boolean isOwner = (isLoggedIn && currentUserId == recipe.getUserId());
+            boolean hasRated = false;
+            boolean hasCommented = false;
+            if (isLoggedIn) {
+                hasRated = db.hasUserRated(currentRecipeId, currentUserId);
+                hasCommented = db.hasUserCommented(currentRecipeId, currentUserId);
+            }
+            boolean hasRatedOrCommented = isLoggedIn && (hasRated || hasCommented);
 
-            commentSection.setVisibility((isOwner || hasRatedOrCommented) ? View.GONE : View.VISIBLE);
+            Log.d("DEBUG", "isLoggedIn=" + isLoggedIn + ", isOwner=" + isOwner + ", hasRated=" + hasRated + ", hasCommented=" + hasCommented);
+
+            if (!isLoggedIn || isOwner || hasRatedOrCommented) {
+                commentSection.setVisibility(View.GONE);
+                Log.d("DEBUG", "Comment section GONE");
+            } else {
+                commentSection.setVisibility(View.VISIBLE);
+                Log.d("DEBUG", "Comment section VISIBLE");
+            }
 
             btnSubmitRating.setOnClickListener(v -> submitRating());
 
@@ -186,7 +200,7 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
 
     private void setupCommentSection() {
         allComments = db.getCommentsByRecipeId(currentRecipeId);
-        commentAdapter = new CommentAdapter(allComments, db);
+        commentAdapter = new HomeCommentAdapter(allComments, db);
         recyclerComments.setAdapter(commentAdapter);
         recyclerComments.setLayoutManager(new LinearLayoutManager(this));
         updateRatingSummary();
