@@ -196,11 +196,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (imagePath != null && !imagePath.isEmpty()) {
             Glide.with(this)
                     .load(imagePath)  // Load trực tiếp đường dẫn chuỗi
-                    .placeholder(R.drawable.chebamau)
-                    .error(R.drawable.chebamau)
+                    .placeholder(R.drawable.auto)
+                    .error(R.drawable.auto)
                     .into(imageRecipe);
         } else {
-            imageRecipe.setImageResource(R.drawable.chebamau); // Ảnh mặc định
+            imageRecipe.setImageResource(R.drawable.auto); // Ảnh mặc định
         }
     }
 

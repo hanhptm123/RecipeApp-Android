@@ -953,5 +953,70 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         }
         return username;
     }
+    public ArrayList<Recipe> getTopFavouriteRecipes() {
+        ArrayList<Recipe> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT R.*, COUNT(F.FavouriteID) as totalFavourites " +
+                "FROM RecipeTable R " +
+                "LEFT JOIN Favourites F ON R.id = F.RecipeID " +
+                "WHERE R.isApproved = 1 " +
+                "GROUP BY R.id " +
+                "ORDER BY totalFavourites DESC " +
+                "LIMIT 10";
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+                String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+                String origin = cursor.getString(cursor.getColumnIndexOrThrow("origin"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow("updatedAt"));
+                int recipeUserId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
+                String imagePath = cursor.getString(cursor.getColumnIndexOrThrow("imagePath"));
+                Integer isApproved = cursor.isNull(cursor.getColumnIndexOrThrow("isApproved")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("isApproved"));
+                String rejectReason = cursor.getString(cursor.getColumnIndexOrThrow("rejectReason"));
+                String instructions = cursor.getString(cursor.getColumnIndexOrThrow("instructions"));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                int countView = cursor.getInt(cursor.getColumnIndexOrThrow("countView"));
+                int totalFavourites = cursor.getInt(cursor.getColumnIndexOrThrow("totalFavourites"));
+
+                Recipe recipe = new Recipe(id, title, time, type, origin, date, updatedAt, recipeUserId,
+                        imagePath, isApproved, rejectReason, instructions, description, countView);
+
+                recipe.setTotalFavourites(totalFavourites);
+                list.add(recipe);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> userList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Users", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("UserID"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("UserName"));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("Email"));
+                int isBanned = cursor.getInt(cursor.getColumnIndexOrThrow("IsBanned"));
+                String avatar = cursor.getString(cursor.getColumnIndexOrThrow("Avatar"));
+                String banReason = cursor.getString(cursor.getColumnIndexOrThrow("BanReason"));
+
+                User user = new User(id, name, email, isBanned, avatar, banReason);
+                userList.add(user);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return userList;
+    }
 
 }

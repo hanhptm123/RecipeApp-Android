@@ -3,6 +3,7 @@ package com.example.recipeapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -48,7 +51,45 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
         holder.tvType.setText("Category: " + recipe.getType());
         holder.tvOrigin.setText("Origin: " + recipe.getOrigin());
         holder.tvDate.setText("Posted On: " + recipe.getDate());
-        holder.tvUser.setText(String.valueOf(recipe.getUserId())); // ✅ OK
+        int recipeOwnerId = recipe.getUserId();
+
+// Hiển thị tên người dùng
+        Cursor userCursor = dbHelper.Doc_bang("SELECT UserName FROM Users WHERE UserID = " + recipeOwnerId);
+        if (userCursor != null && userCursor.moveToFirst()) {
+            int colIndex = userCursor.getColumnIndex("UserName");
+            if (colIndex != -1) {
+                String username = userCursor.getString(colIndex);
+                holder.tvUser.setText(username);
+            } else {
+                holder.tvUser.setText("Unknown");
+            }
+            userCursor.close();
+        } else {
+            holder.tvUser.setText("Unknown");
+        }
+
+// Hiển thị avatar
+        Cursor cursor = dbHelper.Doc_bang("SELECT Avatar FROM Users WHERE UserID = " + recipeOwnerId);
+        String avatarName = null;
+        if (cursor.moveToFirst()) {
+            int colIndex = cursor.getColumnIndex("Avatar");
+            if (colIndex != -1) {
+                avatarName = cursor.getString(colIndex);
+            }
+        }
+        cursor.close();
+
+        if (avatarName == null || avatarName.equals("profile.png")) {
+            holder.imgUser.setImageResource(R.drawable.profile); // ảnh mặc định
+        } else {
+            Glide.with(context)
+                    .load(avatarName)
+                    .placeholder(R.drawable.profile)
+                    .error(R.drawable.profile)
+                    .circleCrop()
+                    .into(holder.imgUser);
+        }
+
 
 
         // Load ảnh từ imagePath
@@ -61,15 +102,15 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
                 if (bitmap != null) {
                     holder.imgRecipe.setImageBitmap(bitmap);
                 } else {
-                    holder.imgRecipe.setImageResource(R.drawable.pho);
+                    holder.imgRecipe.setImageResource(R.drawable.auto);
                 }
                 if (inputStream != null) inputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                holder.imgRecipe.setImageResource(R.drawable.pho);
+                holder.imgRecipe.setImageResource(R.drawable.auto);
             }
         } else {
-            holder.imgRecipe.setImageResource(R.drawable.pho);
+            holder.imgRecipe.setImageResource(R.drawable.auto);
         }
 
         holder.btnFavorite.setImageResource(R.drawable.heart_color);
@@ -113,7 +154,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
 
     public static class FavouriteViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvTime, tvType, tvOrigin, tvDate, tvUser;
-        ImageView imgRecipe;
+        ImageView imgRecipe, imgUser;
         ImageButton btnFavorite;
 
         public FavouriteViewHolder(View itemView) {
@@ -126,6 +167,8 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
             tvUser = itemView.findViewById(R.id.tvUser_favourite);
             imgRecipe = itemView.findViewById(R.id.imgRecipe_favourite);
             btnFavorite = itemView.findViewById(R.id.btnFavorite_favourite);
+            imgUser = itemView.findViewById(R.id.imgUser_favourite);
+
         }
     }
 }
