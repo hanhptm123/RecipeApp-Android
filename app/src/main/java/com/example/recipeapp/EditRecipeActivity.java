@@ -163,11 +163,27 @@ public class EditRecipeActivity extends AppCompatActivity {
         String time = editTime.getText().toString().trim();
         String instructions = editInstructions.getText().toString().trim();
 
-        if (title.isEmpty() || description.isEmpty() || time.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+//        if (title.isEmpty() || description.isEmpty() || time.isEmpty()) {
+//            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+
+        if (title.isEmpty()) {
+            editTitle.setError("Please enter a title");
             return;
         }
-
+        if (description.isEmpty()) {
+            editDescription.setError("Please enter a description");
+            return;
+        }
+        if (time.isEmpty()) {
+            editTime.setError("Please enter cooking time");
+            return;
+        }
+        if (instructions.isEmpty()) {
+            editInstructions.setError("Please enter instructions");
+            return;
+        }
         // Get category
         String selectedCategoryName = spinnerCategory.getSelectedItem() != null ? spinnerCategory.getSelectedItem().toString() : "";
         Integer categoryId = db.getCategoryIdByName(selectedCategoryName);
