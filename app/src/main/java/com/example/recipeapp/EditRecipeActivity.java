@@ -237,6 +237,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         }
 
         // Update in database
+        recipe.setIsApproved(null);
         boolean success = db.updateRecipeAndIngredients(recipe, updatedIngredients);
         if (success) {
             Toast.makeText(this, "Recipe updated successfully", Toast.LENGTH_SHORT).show();
