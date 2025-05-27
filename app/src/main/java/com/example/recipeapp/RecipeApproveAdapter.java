@@ -72,11 +72,11 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
         } else if (status == 1) {
             // Đã duyệt
             holder.tvApprovedStatus.setVisibility(View.VISIBLE);
-            holder.tvApprovedStatus.setText("Đã duyệt");
+            holder.tvApprovedStatus.setText("Approved");
         } else if (status == 0) {
             // Đã từ chối
             holder.tvRejectReason.setVisibility(View.VISIBLE);
-            holder.tvRejectReason.setText("Từ chối: " + recipe.getRejectReason());
+            holder.tvRejectReason.setText("Rejected: " + recipe.getRejectReason());
         }
 
         // Xử lý duyệt
@@ -97,7 +97,7 @@ public class RecipeApproveAdapter extends RecyclerView.Adapter<RecipeApproveAdap
         holder.btnConfirmReject.setOnClickListener(v -> {
             String reason = holder.etRejectReasonInput.getText().toString().trim();
             if (reason.isEmpty()) {
-                Toast.makeText(context, "Vui lòng nhập lý do từ chối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Please give reject reason!", Toast.LENGTH_SHORT).show();
                 return;
             }
             recipe.setIsApproved(0);

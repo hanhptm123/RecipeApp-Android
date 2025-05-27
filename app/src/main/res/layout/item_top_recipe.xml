@@ -1,5 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -7,37 +7,51 @@
     android:padding="12dp"
     android:layout_margin="8dp">
 
-    <TextView android:id="@+id/tvIndex"
-        android:text="1"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <!-- Cột bên trái: thông tin -->
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
 
-    <TextView android:id="@+id/tvTitle"
-        android:text="Recipe Name"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/tvIndex"
+            android:text="1"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView android:id="@+id/text_count_view"
-        android:text="Views: 100"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/darker_gray" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:text="Recipe Name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black" />
 
-    <TextView android:id="@+id/tvUser"
-        android:text="Created: 2024-01-01"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/darker_gray" />
+        <TextView
+            android:id="@+id/text_count_view"
+            android:text="Views: 100"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/darker_gray" />
 
-    <Button android:id="@+id/btnView"
+        <TextView
+            android:id="@+id/tvUser"
+            android:text="Created: 2024-01-01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/darker_gray" />
+    </LinearLayout>
+
+    <!-- Cột bên phải: nút View -->
+    <Button
+        android:id="@+id/btnView"
         android:text="View"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:layout_marginTop="8dp" />
+        android:layout_gravity="center_vertical" />
 </LinearLayout>
