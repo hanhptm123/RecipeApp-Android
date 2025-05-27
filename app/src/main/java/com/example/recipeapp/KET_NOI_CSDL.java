@@ -835,6 +835,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
         String sql = "SELECT * FROM RecipeTable " +
                 "WHERE strftime('%m', updatedAt) = ? AND strftime('%Y', updatedAt) = ? " +
+                "AND isApproved = 1 " +  // Thêm điều kiện này
                 "ORDER BY countView DESC LIMIT 20";
 
         Cursor cursor = db.rawQuery(sql, new String[]{monthStr, yearStr});
@@ -867,6 +868,7 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
         db.close();
         return list;
     }
+
 
 
     // Kiểm tra đã yêu thích chưa
