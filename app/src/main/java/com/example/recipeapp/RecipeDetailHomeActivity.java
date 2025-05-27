@@ -61,7 +61,7 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
             currentRecipeId = recipe.getRecipeId();
             displayRecipeInfo(recipe);
             displayIngredients(detailIngredients);
-            textCountView.setText("Lượt xem: " + recipe.getCountView());
+            textCountView.setText("View: " + recipe.getCountView());
 
 
             boolean isLoggedIn = (currentUserId != -1);
@@ -147,14 +147,14 @@ public class RecipeDetailHomeActivity extends AppCompatActivity {
 
     private void displayRecipeInfo(Recipe recipe) {
         textTitle.setText(recipe.getTitle());
-        textTime.setText("Thời gian: " + recipe.getTime());
-        textType.setText("Loại: " + recipe.getType());
-        textOrigin.setText("Xuất xứ: " + recipe.getOrigin());
-        textDate.setText("Ngày đăng: " + recipe.getDate());
+        textTime.setText("Time: " + recipe.getTime());
+        textType.setText("Category: " + recipe.getType());
+        textOrigin.setText("Origin: " + recipe.getOrigin());
+        textDate.setText("Posted on: " + recipe.getDate());
         String username = db.getUsernameByUserId(recipe.getUserId());
         Log.d("DEBUG_USERNAME", "Username: " + username);
 
-        textUser.setText("Người đăng: " + username);
+        textUser.setText("Posted by: " + username);
         textDescription.setText(recipe.getDescription());
         textInstruction.setText(recipe.getInstructions());
         String imagePath = recipe.getImagePath();

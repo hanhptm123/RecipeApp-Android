@@ -44,11 +44,9 @@ public class TopFavouriteAdapter extends RecyclerView.Adapter<TopFavouriteAdapte
 
         holder.txtTitle.setText(recipe.getTitle());
         holder.txtDescription.setText(recipe.getDescription());
-        holder.txtFavouriteCount.setText("❤ " + recipe.getTotalFavourites() + " lượt yêu thích");
-        holder.txtType.setText("Loại: " + recipe.getType());
-        holder.txtOrigin.setText("Xuất xứ: " + recipe.getOrigin());
-
-        // Không hiển thị tên người dùng nữa
+        holder.txtFavouriteCount.setText("❤ " + recipe.getTotalFavourites() + " favourites");
+        holder.txtType.setText("Type: " + recipe.getType());
+        holder.txtOrigin.setText("Origin: " + recipe.getOrigin());
 
         // Load ảnh
         Glide.with(context)
