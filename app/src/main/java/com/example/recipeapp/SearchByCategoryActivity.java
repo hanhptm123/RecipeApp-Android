@@ -26,7 +26,7 @@ public class SearchByCategoryActivity extends AppCompatActivity {
     List<Recipe> results;
 
     private void setupSpinnerType() {
-        String[] types = {"Món chính", "Tráng miệng", "Đồ uống"};
+        String[] types = {"Main Dish","Dessert","Drink"};
         ArrayAdapter<String> adapterType = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapterType);
