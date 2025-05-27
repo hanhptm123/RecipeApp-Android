@@ -42,13 +42,13 @@ public class EditRecipeActivity extends AppCompatActivity {
 
         setupSpinners();
 
-        // Lấy recipe từ intent
+        // Get the recipe from the intent
         Object obj = getIntent().getSerializableExtra("RECIPE_TO_EDIT");
         if (obj instanceof Recipe) {
             recipe = (Recipe) obj;
             populateFields(recipe);
         } else {
-            Toast.makeText(this, "Không tìm thấy công thức để chỉnh sửa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No recipe found to edit", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -102,7 +102,7 @@ public class EditRecipeActivity extends AppCompatActivity {
             imageRecipe.setImageURI(imageUri);
         }
 
-        // Chọn category trong spinner
+        // Select category in spinner
         if (recipe.getCategoryId() != null) {
             String categoryName = db.getCategoryNameById(recipe.getCategoryId());
             if (categoryName != null) {
@@ -111,13 +111,13 @@ public class EditRecipeActivity extends AppCompatActivity {
             }
         }
 
-        // Chọn origin trong spinner
+        // Select origin in spinner
         if (recipe.getOrigin() != null) {
             int position = ((ArrayAdapter<String>) spinnerOrigin.getAdapter()).getPosition(recipe.getOrigin());
             if (position >= 0) spinnerOrigin.setSelection(position);
         }
 
-        // Thêm các nguyên liệu vào layout
+        // Add ingredients to layout
         if (recipe.getDetailIngredients() != null) {
             for (DetailRecipeIngredient detail : recipe.getDetailIngredients()) {
                 addIngredientRow(detail);
@@ -147,7 +147,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
-    // Bắt kết quả chọn ảnh
+    // Handle result from image picker
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -164,26 +164,26 @@ public class EditRecipeActivity extends AppCompatActivity {
         String instructions = editInstructions.getText().toString().trim();
 
         if (title.isEmpty() || description.isEmpty() || time.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ các trường bắt buộc", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Lấy category
+        // Get category
         String selectedCategoryName = spinnerCategory.getSelectedItem() != null ? spinnerCategory.getSelectedItem().toString() : "";
         Integer categoryId = db.getCategoryIdByName(selectedCategoryName);
         if (categoryId == null) {
-            Toast.makeText(this, "Danh mục chọn không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid category selected", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Lấy origin
+        // Get origin
         String origin = spinnerOrigin.getSelectedItem() != null ? spinnerOrigin.getSelectedItem().toString() : "";
         if (origin.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn xuất xứ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select origin", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Cập nhật thông tin recipe
+        // Update recipe object
         recipe.setTitle(title);
         recipe.setDescription(description);
         recipe.setTime(time);
@@ -195,7 +195,8 @@ public class EditRecipeActivity extends AppCompatActivity {
         if (imageUri != null) {
             recipe.setImagePath(imageUri.toString());
         }
-        // Thu thập nguyên liệu
+
+        // Collect ingredients
         ArrayList<DetailRecipeIngredient> updatedIngredients = new ArrayList<>();
         for (int i = 0; i < layoutIngredients.getChildCount(); i++) {
             View row = layoutIngredients.getChildAt(i);
@@ -215,15 +216,14 @@ public class EditRecipeActivity extends AppCompatActivity {
         }
 
         if (updatedIngredients.isEmpty()) {
-            Toast.makeText(this, "Vui lòng thêm ít nhất một nguyên liệu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please add at least one ingredient", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Cập nhật database
-        recipe.setIsApproved(null);
+        // Update in database
         boolean success = db.updateRecipeAndIngredients(recipe, updatedIngredients);
         if (success) {
-            Toast.makeText(this, "Cập nhật công thức thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Recipe updated successfully", Toast.LENGTH_SHORT).show();
             recipe.setDetailIngredients(updatedIngredients);
 
             Intent resultIntent = new Intent();
@@ -231,7 +231,7 @@ public class EditRecipeActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         } else {
-            Toast.makeText(this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
         }
     }
 }

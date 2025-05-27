@@ -29,12 +29,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
-
 public class AddRecipeActivity extends AppCompatActivity {
     private String savedImagePath = "";
 
-    private EditText editTitle, editTime,editInstructions,editDescription, editIngredientName, editIngredientAmount;
+    private EditText editTitle, editTime, editInstructions, editDescription, editIngredientName, editIngredientAmount;
     private Spinner spinnerType, spinnerOrigin;
     private Button btnSave;
     private ImageView imageView;
@@ -46,20 +44,16 @@ public class AddRecipeActivity extends AppCompatActivity {
     private LinearLayout layoutIngredients;
     private Button btnAddIngredient;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        final int userId = sharedPref.getInt("UserID", -1); // ✅ dùng final để dùng trong lambda
-
+        final int userId = sharedPref.getInt("UserID", -1);
 
         if (userId == -1) {
-            Toast.makeText(this, "Không xác định được người dùng!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User not identified!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -70,14 +64,12 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         btnAddIngredient.setOnClickListener(v -> addIngredientRow());
 
-        dbHelper = new KET_NOI_CSDL(this); // ✅ Chỉ truyền Context
-
+        dbHelper = new KET_NOI_CSDL(this);
 
         editInstructions = findViewById(R.id.editInstructions);
-
         editTitle = findViewById(R.id.editTitle);
         editTime = findViewById(R.id.editTime);
-        spinnerType = findViewById(R.id.spinnerCategory);  // dùng spinnerCategory làm type
+        spinnerType = findViewById(R.id.spinnerCategory);
         spinnerOrigin = findViewById(R.id.spinnerOrigin);
         editIngredientName = findViewById(R.id.editIngredientName);
         editIngredientAmount = findViewById(R.id.editIngredientAmount);
@@ -94,66 +86,51 @@ public class AddRecipeActivity extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
         });
 
-        Button btback = (Button)findViewById(R.id.btnBack);
-        btback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent it = new Intent(AddRecipeActivity.this, User_home_page.class);
-                startActivity(it);
-            }
+        Button btback = findViewById(R.id.btnBack);
+        btback.setOnClickListener(v -> {
+            Intent it = new Intent(AddRecipeActivity.this, User_home_page.class);
+            startActivity(it);
         });
+
         btnSave.setOnClickListener(v -> {
             String title = editTitle.getText().toString().trim();
             String time = editTime.getText().toString().trim();
             String type = spinnerType.getSelectedItem().toString();
             String origin = spinnerOrigin.getSelectedItem().toString();
+            String description = editDescription.getText().toString().trim();
+            String instructions = editInstructions.getText().toString().trim();
 
+            if (title.isEmpty()) {
+                Toast.makeText(this, "Please enter the recipe title!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            if (title.isEmpty() || time.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập đầy đủ tiêu đề và thời gian!", Toast.LENGTH_SHORT).show();
+            if (description.isEmpty()) {
+                Toast.makeText(this, "Please enter the recipe description!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (time.isEmpty()) {
+                Toast.makeText(this, "Please enter the cooking time!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!isPositiveNumber(time)) {
-                Toast.makeText(this, "Thời gian phải là số nguyên dương!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Time must be a positive number!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int cookTime = Integer.parseInt(time);
-            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            String imagePath = savedImagePath;
-            String instructions = editInstructions.getText().toString().trim();
-            String updatedAt = currentDate;
-            String description = editDescription.getText().toString().trim();
-            Glide.with(this).load(new File(savedImagePath)).into(imageView);
-
-
-            Recipe recipe = new Recipe(
-                    1,
-                    title,
-                    time,
-                    type,
-                    origin,
-                    currentDate,
-                    updatedAt,
-                    userId,
-                    imagePath,
-                    null,
-                    null,
-                    instructions,
-                    description,
-                    0
-            );
-            recipe.setIsApproved(null);
-            recipe.setRejectReason(null);
-            long recipeId = dbHelper.insertRecipe(recipe);
-            if (recipeId == -1) {
-                Toast.makeText(this, "Thêm công thức thất bại!", Toast.LENGTH_SHORT).show();
+            if (instructions.isEmpty()) {
+                Toast.makeText(this, "Please enter cooking instructions!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 🔁 Duyệt tất cả nguyên liệu trong layoutIngredients
             int count = layoutIngredients.getChildCount();
+            if (count == 0) {
+                Toast.makeText(this, "Please add at least one ingredient!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             for (int i = 0; i < count; i++) {
                 LinearLayout row = (LinearLayout) layoutIngredients.getChildAt(i);
                 EditText editName = (EditText) row.getChildAt(0);
@@ -162,27 +139,58 @@ public class AddRecipeActivity extends AppCompatActivity {
                 String ingredientName = editName.getText().toString().trim();
                 String ingredientAmount = editAmount.getText().toString().trim();
 
-                if (ingredientName.isEmpty() || ingredientAmount.isEmpty()) {
-                    Toast.makeText(this, "Vui lòng nhập đầy đủ nguyên liệu ở dòng " + (i + 1), Toast.LENGTH_SHORT).show();
+                if (ingredientName.isEmpty()) {
+                    Toast.makeText(this, "Ingredient name cannot be empty (row " + (i + 1) + ")", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // 💡 Tìm ID nguyên liệu hoặc thêm mới nếu chưa có
-                int ingredientId = dbHelper.getOrCreateIngredientId(ingredientName);
-
-                // ➕ Thêm vào bảng DetailRecipeIngredient
-                long detailId = dbHelper.insertDetailRecipeIngredient((int) recipeId, ingredientId, ingredientAmount);
-                if (detailId == -1) {
-                    Toast.makeText(this, "Lỗi khi lưu nguyên liệu ở dòng " + (i + 1), Toast.LENGTH_SHORT).show();
+                if (ingredientAmount.isEmpty()) {
+                    Toast.makeText(this, "Ingredient amount cannot be empty (row " + (i + 1) + ")", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
 
-            Toast.makeText(this, "Thêm công thức thành công!", Toast.LENGTH_SHORT).show();
+            int cookTime = Integer.parseInt(time);
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            String imagePath = savedImagePath;
+            String updatedAt = currentDate;
+
+            Glide.with(this).load(new File(savedImagePath)).into(imageView);
+
+            Recipe recipe = new Recipe(
+                    1, title, time, type, origin, currentDate, updatedAt, userId,
+                    imagePath, null, null, instructions, description, 0
+            );
+            recipe.setIsApproved(null);
+            recipe.setRejectReason(null);
+            long recipeId = dbHelper.insertRecipe(recipe);
+
+            if (recipeId == -1) {
+                Toast.makeText(this, "Failed to add recipe!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            for (int i = 0; i < count; i++) {
+                LinearLayout row = (LinearLayout) layoutIngredients.getChildAt(i);
+                EditText editName = (EditText) row.getChildAt(0);
+                EditText editAmount = (EditText) row.getChildAt(1);
+
+                String ingredientName = editName.getText().toString().trim();
+                String ingredientAmount = editAmount.getText().toString().trim();
+
+                int ingredientId = dbHelper.getOrCreateIngredientId(ingredientName);
+                long detailId = dbHelper.insertDetailRecipeIngredient((int) recipeId, ingredientId, ingredientAmount);
+
+                if (detailId == -1) {
+                    Toast.makeText(this, "Error saving ingredient at row " + (i + 1), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            Toast.makeText(this, "Recipe added successfully!", Toast.LENGTH_SHORT).show();
             finish();
         });
-
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -190,28 +198,25 @@ public class AddRecipeActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
 
-            // 🟢 Lưu ảnh và cập nhật lại selectedImageUri
             String savedPath = saveImageToInternalStorage(selectedImageUri);
             if (savedPath != null) {
                 savedImagePath = savedPath;
-                selectedImageUri = Uri.fromFile(new File(savedPath)); // dùng URI mới
-                Toast.makeText(this, "Ảnh đã lưu thành công!", Toast.LENGTH_SHORT).show();
+                selectedImageUri = Uri.fromFile(new File(savedPath));
+                Toast.makeText(this, "Image saved successfully!", Toast.LENGTH_SHORT).show();
                 Glide.with(this).load(selectedImageUri).into(imageView);
-
             } else {
-                Toast.makeText(this, "Không thể lưu ảnh!", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(this, "Failed to save image!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void setupSpinners() {
-        String[] types = {"Món chính", "Tráng miệng", "Đồ uống"};
+        String[] types = {"Main Dish", "Dessert", "Drink"};
         ArrayAdapter<String> adapterType = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapterType);
 
-        String[] origins = {"Việt Nam", "Ý", "Nhật", "Mexico"};
+        String[] origins = {"Vietnamese", "Italian", "Japanese", "Mexican"};
         ArrayAdapter<String> adapterOrigin = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, origins);
         adapterOrigin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOrigin.setAdapter(adapterOrigin);
@@ -219,12 +224,12 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     private boolean isUserLoggedIn() {
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        return prefs.contains("user_name"); // thay bằng key bạn lưu user name
+        return prefs.contains("user_name");
     }
 
     private String getLoggedInUserName() {
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        return prefs.getString("user_name", ""); // trả về chuỗi rỗng nếu chưa đăng nhập
+        return prefs.getString("user_name", "");
     }
 
     private void addIngredientRow() {
@@ -237,20 +242,17 @@ public class AddRecipeActivity extends AppCompatActivity {
         rowParams.setMargins(0, 0, 0, 16);
         row.setLayoutParams(rowParams);
 
-        // Tên nguyên liệu
         EditText editName = new EditText(this);
         editName.setHint("Ingredient Name");
         LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.5f);
         editName.setLayoutParams(nameParams);
 
-        // Số lượng
         EditText editAmount = new EditText(this);
         editAmount.setHint("Amount");
         LinearLayout.LayoutParams amountParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         amountParams.setMarginStart(8);
         editAmount.setLayoutParams(amountParams);
 
-        // Nút xóa
         Button btnRemove = new Button(this);
         btnRemove.setText("x");
         btnRemove.setTextColor(Color.WHITE);
@@ -271,17 +273,13 @@ public class AddRecipeActivity extends AppCompatActivity {
     private String saveImageToInternalStorage(Uri imageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
-
-            // Tạo tên file duy nhất
             String fileName = "recipe_" + System.currentTimeMillis() + ".jpg";
 
-            // Tạo thư mục riêng trong bộ nhớ app
             File directory = new File(getFilesDir(), "recipe_images");
             if (!directory.exists()) {
-                directory.mkdirs(); // tạo thư mục nếu chưa có
+                directory.mkdirs();
             }
 
-            // Tạo file mới
             File file = new File(directory, fileName);
 
             OutputStream outputStream = new FileOutputStream(file);
@@ -295,13 +293,12 @@ public class AddRecipeActivity extends AppCompatActivity {
             outputStream.close();
             inputStream.close();
 
-            return file.getAbsolutePath(); // ✅ đường dẫn thật dùng để lưu vào CSDL
+            return file.getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
 
     private boolean isPositiveNumber(String str) {
         try {
