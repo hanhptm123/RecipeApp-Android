@@ -112,7 +112,8 @@ public class KET_NOI_CSDL extends SQLiteOpenHelper {
 
 
         db.execSQL("INSERT INTO Categories (CategoryName) VALUES ('Main Dish'), ('Dessert')");
-        db.execSQL("INSERT INTO Origins (OriginName) VALUES ('Vietnamese'), ('Italian'), ('Japanese'), ('Mexican')") ;
+        db.execSQL("INSERT INTO Origins (OriginName) VALUES ('Vietnam'), ('Italy'), ('Japan'), ('Mexico'), ('France'), ('India'), ('Thailand'), ('China')");
+
         db.execSQL("INSERT INTO Ingredients (IngredientName) VALUES ('Thịt gà'), ('Muối'), ('Đường')");
         db.execSQL("INSERT INTO Users (UserName, Email, Password, Role, IsBanned, Avatar, Address, PhoneNumber, Gender, BanReason) VALUES " +
                 "('Admin', 'admin@gmail.com', '123456', 'Admin', 0, NULL, '123 Admin Street', '0123456789', 'Male', NULL), " +

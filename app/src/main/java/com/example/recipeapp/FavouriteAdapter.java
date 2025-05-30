@@ -92,23 +92,14 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.Favo
 
 
 
-        // Load ảnh từ imagePath
+        // Load ảnh món ăn bằng Glide
         String imagePath = recipe.getImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
-            try {
-                Uri uri = Uri.parse(imagePath);
-                InputStream inputStream = context.getContentResolver().openInputStream(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                if (bitmap != null) {
-                    holder.imgRecipe.setImageBitmap(bitmap);
-                } else {
-                    holder.imgRecipe.setImageResource(R.drawable.auto);
-                }
-                if (inputStream != null) inputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                holder.imgRecipe.setImageResource(R.drawable.auto);
-            }
+            Glide.with(context)
+                    .load(imagePath)
+                    .placeholder(R.drawable.auto)
+                    .error(R.drawable.auto)
+                    .into(holder.imgRecipe);
         } else {
             holder.imgRecipe.setImageResource(R.drawable.auto);
         }
